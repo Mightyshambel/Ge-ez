@@ -24,7 +24,7 @@ This project aims to:
 
 For non-Amharic speakers, here's a comprehensive guide to the Amharic alphabet (Ge'ez script) used in this programming language:
 
-<img src="amharic-alphabet.png" alt="Amharic Alphabet Chart" width="800" height="1067">
+<img src="amharic-alphabet.png" alt="Amharic Alphabet Chart" width="1191" height="1685">
 
 *This chart shows the Amharic syllabic characters (fidel), numerals, and punctuation marks with their Latin transliterations.*
 
