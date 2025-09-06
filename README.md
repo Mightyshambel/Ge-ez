@@ -2,7 +2,15 @@
 
 A programming language that allows you to write code using Amharic keywords and syntax, making programming more accessible to Amharic speakers.
 
-## Features
+## 🎯 Project Goals
+
+This project aims to:
+- Make programming more accessible to Amharic speakers
+- Preserve and promote the Amharic language in technology
+- Create an educational tool for learning programming concepts
+- Demonstrate how to build a programming language interpreter
+
+## 🚀 Features
 
 - **Amharic Keywords**: Use familiar Amharic words for programming concepts
 - **Variable Declarations**: Declare variables with `አስተዋውቅ` (declare)
@@ -10,75 +18,75 @@ A programming language that allows you to write code using Amharic keywords and 
 - **Output**: Print with `አለ` (print)
 - **Data Types**: Numbers, strings, and booleans (`እውነት`/`ሐሰት`)
 - **Operators**: Arithmetic (`+`, `-`, `*`, `/`) and logical (`እና`, `ወይም`, `አይደለም`)
+- **Comments**: Support for `#` comments
 
-## Amharic Keywords
+## 📚 Amharic Keywords Reference
 
-| Amharic | English | Meaning |
-|---------|---------|---------|
-| አስተዋውቅ | VAR | declare/let |
-| ከሆነ | IF | if |
-| አለበለዚያ | ELSE | else |
-| በመሆኑ | WHILE | while |
-| አለ | PRINT | print |
-| እውነት | TRUE | true |
-| ሐሰት | FALSE | false |
-| እና | AND | and |
-| ወይም | OR | or |
-| አይደለም | NOT | not |
-| ውጣ | EXIT | exit |
+| Amharic | English | Meaning | Example |
+|---------|---------|---------|---------|
+| አስተዋውቅ | VAR | declare/let | `አስተዋውቅ ስም = "ጌዝ"` |
+| ከሆነ | IF | if | `ከሆነ አድሜ > 18` |
+| አለበለዚያ | ELSE | else | `አለበለዚያ { አለ "ልጅ" }` |
+| በመሆኑ | WHILE | while | `በመሆኑ ቆጠራ < 5` |
+| አለ | PRINT | print | `አለ "ሰላም"` |
+| እውነት | TRUE | true | `አስተዋውቅ እውነት_ነው = እውነት` |
+| ሐሰት | FALSE | false | `አስተዋውቅ ሐሰት_ነው = ሐሰት` |
+| እና | AND | and | `ሀ > 0 እና ሀ < 10` |
+| ወይም | OR | or | `ሀ == 0 ወይም ሀ == 1` |
+| አይደለም | NOT | not | `አይደለም ሐሰት` |
+| ውጣ | EXIT | exit | `ውጣ` (in interactive mode) |
 
-## Setup
+## 🛠️ Installation & Setup
 
-1. Create and activate a virtual environment:
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
+### Prerequisites
+- Python 3.7 or higher
+- Git (for cloning the repository)
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the application:
-   ```bash
-   python main.py
-   ```
-
-## Usage
-
-### Interactive Mode
+### Step 1: Clone the Repository
 ```bash
-python main.py -i
+git clone https://github.com/Mightyshambel/Ge-ez.git
+cd Ge-ez
 ```
 
-### Run Amharic Program Files
+### Step 2: Create Virtual Environment
 ```bash
-python main.py examples/hello.geez
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-### Command Line Interface
+### Step 3: Install Dependencies
 ```bash
-python -m geez.cli examples/hello.geez
+pip install -r requirements.txt
 ```
 
-## Example Programs
+### Step 4: Run the Language
+```bash
+python main.py
+```
+
+## 📖 Usage Examples
 
 ### Hello World
 ```amharic
+# አማርኛ ፕሮግራም - ሰላም ዓለም
 አስተዋውቅ ስም = "ጌዝ"
 አለ "ሰላም! ስሜ " + ስም + " ነው።"
 ```
 
 ### Math Operations
 ```amharic
+# ሒሳብ ምሳሌ
 አስተዋውቅ ሀ = 10
 አስተዋውቅ ለ = 5
 አለ "ሀ + ለ = " + (ሀ + ለ)
+አለ "ሀ - ለ = " + (ሀ - ለ)
+አለ "ሀ * ለ = " + (ሀ * ለ)
+አለ "ሀ / ለ = " + (ሀ / ለ)
 ```
 
 ### Conditional Statements
 ```amharic
+# ሁኔታዊ መግለጫዎች
 አስተዋውቅ አድሜ = 25
 ከሆነ አድሜ > 18 {
     አለ "አዋቂ ነኝ!"
@@ -89,6 +97,7 @@ python -m geez.cli examples/hello.geez
 
 ### Loops
 ```amharic
+# ሉፕ ምሳሌ
 አስተዋውቅ ቆጠራ = 1
 በመሆኑ ቆጠራ <= 5 {
     አለ "ቆጠራ: " + ቆጠራ
@@ -96,7 +105,27 @@ python -m geez.cli examples/hello.geez
 }
 ```
 
-## Project Structure
+## 🎮 Interactive Mode
+
+Run the language in interactive mode for experimentation:
+
+```bash
+python main.py -i
+```
+
+Example session:
+```
+Ge-ez Interactive Mode (ተገልጋይ ሁነት)
+Type 'ውጣ' to exit
+ጌዝ> አለ "ሰላም አማርኛ!"
+ሰላም አማርኛ!
+ጌዝ> አስተዋውቅ ቁጥር = 42
+ጌዝ> አለ ቁጥር
+42
+ጌዝ> ውጣ
+```
+
+## 🏗️ Project Architecture
 
 ```
 Ge-ez/
@@ -109,30 +138,94 @@ Ge-ez/
 ├── examples/            # Example Amharic programs
 │   ├── hello.geez       # Hello world example
 │   ├── math.geez        # Math operations example
-│   └── loop.geez        # Loop example
+│   ├── loop.geez        # Loop example
+│   └── simple.geez      # Simple variable example
 ├── main.py              # Main entry point
 ├── requirements.txt     # Python dependencies
+├── .gitignore          # Git ignore rules
 └── README.md           # This file
 ```
 
-## Development
+## 🔧 Development
 
-This is an educational project demonstrating how to build a programming language interpreter in Python. The language supports:
+### Running Tests
+```bash
+# Run example programs
+python main.py examples/hello.geez
+python main.py examples/math.geez
+python main.py examples/loop.geez
+```
 
-- Lexical analysis (tokenization)
-- Syntax parsing (AST generation)
-- Expression evaluation
-- Variable management
-- Control flow statements
+### Adding New Features
+1. **New Keywords**: Add to `KEYWORDS` in `geez/lexer.py`
+2. **New Operators**: Add patterns to `TOKEN_PATTERNS` in `geez/lexer.py`
+3. **New Statements**: Extend parser in `geez/parser.py`
+4. **New Execution**: Add to interpreter in `geez/interpreter.py`
 
-## Contributing
+### Code Structure
+- **Lexer**: Converts Amharic text into tokens
+- **Parser**: Builds Abstract Syntax Tree (AST) from tokens
+- **Interpreter**: Executes the AST and manages variables
 
-Feel free to contribute by:
-- Adding more Amharic keywords
-- Implementing additional language features
-- Creating more example programs
-- Improving error messages in Amharic
+## 🤝 Contributing
 
-## License
+We welcome contributions! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit your changes**: `git commit -m 'Add amazing feature'`
+4. **Push to the branch**: `git push origin feature/amazing-feature`
+5. **Open a Pull Request**
+
+### Areas for Contribution
+- Add more Amharic keywords
+- Implement additional language features (functions, arrays, etc.)
+- Improve error messages in Amharic
+- Create more example programs
+- Add unit tests
+- Improve documentation
+- Add syntax highlighting for editors
+
+## 📝 Language Specification
+
+### Data Types
+- **Numbers**: `42`, `3.14`
+- **Strings**: `"ሰላም"`, `"Hello"`
+- **Booleans**: `እውነት`, `ሐሰት`
+
+### Operators
+- **Arithmetic**: `+`, `-`, `*`, `/`
+- **Comparison**: `==`, `!=`, `<`, `>`, `<=`, `>=`
+- **Logical**: `እና`, `ወይም`, `አይደለም`
+
+### Statements
+- **Variable Declaration**: `አስተዋውቅ identifier = expression`
+- **Print**: `አለ expression`
+- **Conditional**: `ከሆነ condition { statements } አለበለዚያ { statements }`
+- **Loop**: `በመሆኑ condition { statements }`
+
+## 🐛 Known Issues
+
+- Interactive mode has some input handling issues
+- Limited error messages in Amharic
+- No support for functions yet
+- No array/list data type
+
+## 📄 License
 
 This project is for educational purposes. Feel free to use and modify as needed.
+
+## 🙏 Acknowledgments
+
+- Inspired by the beauty and richness of the Amharic language
+- Built with Python's simplicity and power
+- Thanks to the open-source community for inspiration
+
+## 📞 Contact
+
+- **GitHub**: [@Mightyshambel](https://github.com/Mightyshambel)
+- **Repository**: [https://github.com/Mightyshambel/Ge-ez](https://github.com/Mightyshambel/Ge-ez)
+
+---
+
+**Made with ❤️ for the Amharic-speaking community**
