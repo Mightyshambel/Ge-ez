@@ -27,7 +27,7 @@ def main():
         print("Type 'ውጣ' to exit")
         while True:
             try:
-                line = input("ጌዝ> ")
+                line = input("ግእዝ> ")
                 if line.strip() == 'ውጣ':
                     break
                 if line.strip():

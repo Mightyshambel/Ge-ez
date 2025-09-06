@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Command-line interface
 
 - **User Interface**
-  - Interactive mode with Amharic prompt (`ጌዝ>`)
+  - Interactive mode with Amharic prompt (`ግእዝ>`)
   - File execution mode
   - Help system
 

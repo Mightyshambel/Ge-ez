@@ -313,7 +313,7 @@ interpreter = GeEzInterpreter()
 
 # Simple program
 code = '''
-አስተዋውቅ ስም = "ጌዝ"
+አስተዋውቅ ስም = "ግእዝ"
 አለ ስም
 '''
 

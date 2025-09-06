@@ -10,7 +10,7 @@ from geez.cli import main as cli_main
 
 def main():
     """Main function"""
-    print("Welcome to Ge-ez! (ጌዝ አማርኛ የፕሮግራሚንግ ቋንቋ)")
+    print("Welcome to Ge-ez! (ግእዝ አማርኛ የፕሮግራሚንግ ቋንቋ)")
     print("Amharic Programming Language")
     print("=" * 40)
     

@@ -210,10 +210,10 @@ python main.py examples/simple.geez
 
 Expected output:
 ```
-Welcome to Ge-ez! (ጌዝ አማርኛ የፕሮግራሚንግ ቋንቋ)
+Welcome to Ge-ez! (ግእዝ አማርኛ የፕሮግራሚንግ ቋንቋ)
 Amharic Programming Language
 ========================================
-ጌዝ
+ግእዝ
 ```
 
 ### Interactive Mode Test
