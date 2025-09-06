@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
-    FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode
+    FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode
 )
 
 
@@ -62,6 +62,9 @@ class GeEzInterpreter:
         
         elif isinstance(node, IndexNode):
             return self.execute_index(node)
+        
+        elif isinstance(node, InputNode):
+            return self.execute_input(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -272,6 +275,19 @@ class GeEzInterpreter:
             raise IndexError(f"List index {index} out of range (list has {len(list_value)} elements)")
         
         return list_value[index]
+    
+    def execute_input(self, node: InputNode) -> str:
+        """Execute input function: አይተ() or አይተ(prompt)"""
+        if node.prompt:
+            prompt_value = self.execute(node.prompt)
+            if isinstance(prompt_value, str):
+                user_input = input(prompt_value)
+            else:
+                user_input = input(str(prompt_value))
+        else:
+            user_input = input()
+        
+        return user_input
 
 
 class ReturnException(Exception):

@@ -61,6 +61,14 @@ class IndexNode(ASTNode):
         return f"Index({self.list_expr}[{self.index_expr}])"
 
 
+class InputNode(ASTNode):
+    def __init__(self, prompt: Optional[ASTNode] = None):
+        self.prompt = prompt
+    
+    def __repr__(self):
+        return f"Input({self.prompt})"
+
+
 class BinaryOpNode(ASTNode):
     def __init__(self, left: ASTNode, operator: str, right: ASTNode):
         self.left = left
@@ -423,6 +431,15 @@ class GeEzParser:
         
         if self.match('FALSE'):
             return BooleanNode(False)
+        
+        if self.match('INPUT'):
+            # Parse input function: አይተ() or አይተ(prompt)
+            self.consume('LPAREN', 'Expected ( after አይተ')
+            prompt = None
+            if not self.match('RPAREN'):
+                prompt = self.parse_expression()
+                self.consume('RPAREN', 'Expected )')
+            return InputNode(prompt)
         
         if self.match('IDENTIFIER', 'AMHARIC_ID'):
             name = self.previous().value

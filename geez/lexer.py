@@ -41,6 +41,7 @@ class GeEzLexer:
         'ውጣ': 'EXIT',          # exit
         'ይጠራ': 'CALL',         # call
         'በ': 'IN',              # in (for loops)
+        'ግብአት': 'INPUT',        # input
     }
     
     # Token patterns

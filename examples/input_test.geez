@@ -1,0 +1,14 @@
+# Test input function in ግእዝ
+
+# Simple input without prompt
+ማተም "ስምህን አስገባ:"
+አስተዋውቅ ስም = አይተ()
+ማተም "ሰላም " + ስም + "!"
+
+# Input with prompt
+አስተዋውቅ አድሜ = አይተ("አድሜህን አስገባ: ")
+ማተም "አድሜህ " + አድሜ + " ነው"
+
+# Input for numbers (will be strings, need to convert)
+አስተዋውቅ ቁጥር_ጽሁፍ = አይተ("ቁጥር አስገባ: ")
+ማተም "አስገብከው " + ቁጥር_ጽሁፍ + " ነው"

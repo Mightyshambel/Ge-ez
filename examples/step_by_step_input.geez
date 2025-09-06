@@ -1,0 +1,15 @@
+# Test input function step by step
+
+# Test 1: Basic input
+ማተም "ስምህን አስገባ:"
+አስተዋውቅ ስም = አይተ()
+ማተም "ሰላም " + ስም
+
+# Test 2: Input with string prompt
+አስተዋውቅ አድሜ = አይተ("አድሜህን አስገባ: ")
+ማተም "አድሜህ " + አድሜ
+
+# Test 3: Multiple inputs
+አስተዋውቅ ከተማ = አይተ("ከተማህ: ")
+አስተዋውቅ ሀገር = አይተ("ሀገርህ: ")
+ማተም "አንተ " + ከተማ + ", " + ሀገር + " ውስጥ ትኖራለህ"
