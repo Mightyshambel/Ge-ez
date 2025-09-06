@@ -1,0 +1,6 @@
+# Test error handling for lists
+
+አስተዋውቅ ዝርዝር = [1, 2, 3]
+
+# This should cause an index error
+ማተም ዝርዝር[10]

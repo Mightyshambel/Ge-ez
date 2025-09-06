@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
-    FunctionNode, CallNode, ReturnNode, ForNode
+    FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode
 )
 
 
@@ -56,6 +56,12 @@ class GeEzInterpreter:
         
         elif isinstance(node, IdentifierNode):
             return self.get_variable(node.name)
+        
+        elif isinstance(node, ListNode):
+            return self.execute_list(node)
+        
+        elif isinstance(node, IndexNode):
+            return self.execute_index(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -245,6 +251,27 @@ class GeEzInterpreter:
         """Execute return statement"""
         value = self.execute(node.value) if node.value else None
         raise ReturnException(value)
+    
+    def execute_list(self, node: ListNode) -> List[Any]:
+        """Execute list creation: [expr1, expr2, ...]"""
+        return [self.execute(element) for element in node.elements]
+    
+    def execute_index(self, node: IndexNode) -> Any:
+        """Execute list indexing: list[index]"""
+        list_value = self.execute(node.list_expr)
+        index_value = self.execute(node.index_expr)
+        
+        if not isinstance(list_value, list):
+            raise TypeError(f"Can only index lists, not {type(list_value).__name__}")
+        
+        if not isinstance(index_value, (int, float)):
+            raise TypeError(f"List index must be a number, not {type(index_value).__name__}")
+        
+        index = int(index_value)
+        if index < 0 or index >= len(list_value):
+            raise IndexError(f"List index {index} out of range (list has {len(list_value)} elements)")
+        
+        return list_value[index]
 
 
 class ReturnException(Exception):

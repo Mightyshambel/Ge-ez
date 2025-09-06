@@ -59,6 +59,8 @@ class GeEzLexer:
         ('RPAREN', r'\)'),                  # Right parenthesis
         ('LBRACE', r'\{'),                  # Left brace
         ('RBRACE', r'\}'),                  # Right brace
+        ('LBRACKET', r'\['),                # Left bracket (for lists)
+        ('RBRACKET', r'\]'),                # Right bracket (for lists)
         ('SEMICOLON', r';'),                # Semicolon
         ('COMMA', r','),                    # Comma
         ('EQUAL', r'=='),                   # Equality

@@ -44,6 +44,23 @@ class IdentifierNode(ASTNode):
         return f"Identifier({self.name})"
 
 
+class ListNode(ASTNode):
+    def __init__(self, elements: List[ASTNode]):
+        self.elements = elements
+    
+    def __repr__(self):
+        return f"List({self.elements})"
+
+
+class IndexNode(ASTNode):
+    def __init__(self, list_expr: ASTNode, index_expr: ASTNode):
+        self.list_expr = list_expr
+        self.index_expr = index_expr
+    
+    def __repr__(self):
+        return f"Index({self.list_expr}[{self.index_expr}])"
+
+
 class BinaryOpNode(ASTNode):
     def __init__(self, left: ASTNode, operator: str, right: ASTNode):
         self.left = left
@@ -382,6 +399,18 @@ class GeEzParser:
     
     def parse_primary(self) -> ASTNode:
         """Parse primary: number, string, boolean, identifier, or (expression)"""
+        expr = self.parse_atom()
+        
+        # Handle list indexing: expr[expr]
+        while self.match('LBRACKET'):
+            index_expr = self.parse_expression()
+            self.consume('RBRACKET', 'Expected ]')
+            expr = IndexNode(expr, index_expr)
+        
+        return expr
+    
+    def parse_atom(self) -> ASTNode:
+        """Parse atomic expressions"""
         if self.match('NUMBER'):
             return NumberNode(float(self.previous().value))
         
@@ -414,6 +443,17 @@ class GeEzParser:
             expr = self.parse_expression()
             self.consume('RPAREN', 'Expected )')
             return expr
+        
+        if self.match('LBRACKET'):
+            # Parse list: [expr1, expr2, ...]
+            elements = []
+            if not self.match('RBRACKET'):
+                while True:
+                    elements.append(self.parse_expression())
+                    if not self.match('COMMA'):
+                        break
+                self.consume('RBRACKET', 'Expected ]')
+            return ListNode(elements)
         
         raise SyntaxError(f"Unexpected token: {self.peek()}")
     
