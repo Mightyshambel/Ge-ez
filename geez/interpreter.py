@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
-    FunctionNode, CallNode, ReturnNode
+    FunctionNode, CallNode, ReturnNode, ForNode
 )
 
 
@@ -74,6 +74,9 @@ class GeEzInterpreter:
         
         elif isinstance(node, WhileNode):
             return self.execute_while(node)
+        
+        elif isinstance(node, ForNode):
+            return self.execute_for(node)
         
         elif isinstance(node, FunctionNode):
             return self.execute_function_declaration(node)
@@ -165,6 +168,24 @@ class GeEzInterpreter:
         while self.execute(node.condition):
             for statement in node.block:
                 self.execute(statement)
+        
+        return None
+    
+    def execute_for(self, node: ForNode) -> Any:
+        """Execute for loop"""
+        # For now, we'll implement a simple range-based for loop
+        # Later we can extend this to work with lists and other iterables
+        
+        iterable = self.execute(node.iterable)
+        
+        # Simple range implementation for numbers
+        if isinstance(iterable, (int, float)):
+            for i in range(int(iterable)):
+                self.variables[node.variable] = i
+                for statement in node.body:
+                    self.execute(statement)
+        else:
+            raise RuntimeError(f"Cannot iterate over {type(iterable)}")
         
         return None
     

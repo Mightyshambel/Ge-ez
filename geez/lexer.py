@@ -40,6 +40,7 @@ class GeEzLexer:
         'አይደለም': 'NOT',       # not
         'ውጣ': 'EXIT',          # exit
         'ይጠራ': 'CALL',         # call
+        'በ': 'IN',              # in (for loops)
     }
     
     # Token patterns

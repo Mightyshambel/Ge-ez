@@ -228,4 +228,4 @@ This project is for educational purposes. Feel free to use and modify as needed.
 
 ---
 
-**Made By Mighty Shambel for the Amharic-speaking community**
+**Made by Mighty Shambel for the Amharic-speaking community**

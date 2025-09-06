@@ -126,6 +126,16 @@ class ReturnNode(ASTNode):
         return f"Return({self.value})"
 
 
+class ForNode(ASTNode):
+    def __init__(self, variable: str, iterable: ASTNode, body: List[ASTNode]):
+        self.variable = variable
+        self.iterable = iterable
+        self.body = body
+    
+    def __repr__(self):
+        return f"For({self.variable}, {self.iterable}, {self.body})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -154,6 +164,8 @@ class GeEzParser:
             return self.parse_if_statement()
         elif self.match('WHILE'):
             return self.parse_while_statement()
+        elif self.match('FOR'):
+            return self.parse_for_statement()
         elif self.match('FUNCTION'):
             return self.parse_function_declaration()
         elif self.match('RETURN'):
@@ -213,6 +225,29 @@ class GeEzParser:
                     block.append(stmt)
         
         return WhileNode(condition, block)
+    
+    def parse_for_statement(self) -> ASTNode:
+        """Parse for statement: ለ variable በ iterable { body }"""
+        variable = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected variable name').value
+        
+        # Skip በ keyword
+        if self.match('IN'):
+            pass  # Skip the በ keyword
+        else:
+            raise SyntaxError("Expected በ keyword")
+        
+        # Parse iterable (for now, just a simple range or list)
+        iterable = self.parse_expression()
+        
+        # Parse for loop body
+        body = []
+        if self.match('LBRACE'):
+            while not self.match('RBRACE') and not self.is_at_end():
+                stmt = self.parse_statement()
+                if stmt:
+                    body.append(stmt)
+        
+        return ForNode(variable, iterable, body)
     
     def parse_function_declaration(self) -> ASTNode:
         """Parse function declaration: ተግባር name (parameters) { body }"""
