@@ -1,0 +1,10 @@
+# Very simple comparison test
+አስተዋውቅ ሀ = 5
+አስተዋውቅ ለ = 3
+
+# Test basic comparisons
+አስተዋውቅ እኩል_ነው = ሀ == ለ
+አስተዋውቅ አይደለም = ሀ != ለ
+
+ማተም እኩል_ነው
+ማተም አይደለም

@@ -1,0 +1,4 @@
+# Test with different operators
+አስተዋውቅ ሀ = 5
+አስተዋውቅ ለ = 3
+አስተዋውቅ እኩል_ነው = ሀ == ለ

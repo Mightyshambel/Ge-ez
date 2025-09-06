@@ -50,7 +50,11 @@ class GeEzLexer:
         ('NUMBER', r'\d+\.?\d*'),           # Numbers
         ('STRING', r'"[^"]*"'),             # Strings
         ('IDENTIFIER', r'[a-zA-Z_][a-zA-Z0-9_]*'),  # Identifiers
-        ('AMHARIC_ID', r'[\u1200-\u137F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2F]+'),  # Amharic identifiers
+        ('AMHARIC_ID', r'[\u1200-\u137F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2F][\u1200-\u137F\u1380-\u139F\u2D80-\u2DDF\uAB00-\uAB2Fa-zA-Z0-9_]*'),  # Amharic identifiers
+        ('EQUAL', r'=='),                   # Equality
+        ('NOT_EQUAL', r'!='),               # Not equal
+        ('LESS_EQUAL', r'<='),              # Less or equal
+        ('GREATER_EQUAL', r'>='),           # Greater or equal
         ('ASSIGN', r'='),                   # Assignment
         ('PLUS', r'\+'),                    # Addition
         ('MINUS', r'-'),                    # Subtraction
@@ -64,12 +68,8 @@ class GeEzLexer:
         ('RBRACKET', r'\]'),                # Right bracket (for lists)
         ('SEMICOLON', r';'),                # Semicolon
         ('COMMA', r','),                    # Comma
-        ('EQUAL', r'=='),                   # Equality
-        ('NOT_EQUAL', r'!='),               # Not equal
         ('LESS', r'<'),                     # Less than
         ('GREATER', r'>'),                  # Greater than
-        ('LESS_EQUAL', r'<='),              # Less or equal
-        ('GREATER_EQUAL', r'>='),           # Greater or equal
         ('NEWLINE', r'\n'),                 # Newline
         ('WHITESPACE', r'\s+'),             # Whitespace
     ]

@@ -25,15 +25,25 @@ def main():
     if args.interactive:
         print("Ge-ez Interactive Mode (ተገልጋይ ሁነት)")
         print("Type 'ውጣ' to exit")
+        print("Type 'አፈጣጠር' to execute accumulated statements")
+        
+        accumulated_code = []
         while True:
             try:
                 line = input("ግእዝ> ")
                 if line.strip() == 'ውጣ':
                     break
-                if line.strip():
-                    result = interpreter.interpret(line)
-                    if result is not None:
-                        print(result)
+                elif line.strip() == 'አፈጣጠር':
+                    # Execute all accumulated statements
+                    if accumulated_code:
+                        full_code = '\n'.join(accumulated_code)
+                        interpreter.interpret(full_code)
+                        accumulated_code = []  # Clear after execution
+                    else:
+                        print("ምንም ኮድ አልተገኘም")
+                elif line.strip():
+                    # Add line to accumulated code
+                    accumulated_code.append(line)
             except KeyboardInterrupt:
                 print("\nውጣ")
                 break

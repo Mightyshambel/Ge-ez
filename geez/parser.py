@@ -195,7 +195,7 @@ class GeEzParser:
             return self.parse_function_declaration()
         elif self.match('RETURN'):
             return self.parse_return_statement()
-        elif self.match('IDENTIFIER', 'AMHARIC_ID'):
+        elif self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR'):
             # Check if this is a function call or assignment
             if self.check('LPAREN'):
                 return self.parse_function_call_statement()
@@ -206,7 +206,7 @@ class GeEzParser:
     
     def parse_variable_declaration(self) -> ASTNode:
         """Parse variable declaration: አስተዋውቅ identifier = expression"""
-        identifier = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected identifier').value
+        identifier = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected identifier').value
         self.consume('ASSIGN', 'Expected =')
         value = self.parse_expression()
         return AssignmentNode(identifier, value)
@@ -253,7 +253,7 @@ class GeEzParser:
     
     def parse_for_statement(self) -> ASTNode:
         """Parse for statement: ለ variable በ iterable { body }"""
-        variable = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected variable name').value
+        variable = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected variable name').value
         
         # Skip በ keyword
         if self.match('IN'):
@@ -276,14 +276,14 @@ class GeEzParser:
     
     def parse_function_declaration(self) -> ASTNode:
         """Parse function declaration: ተግባር name (parameters) { body }"""
-        name = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected function name').value
+        name = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected function name').value
         
         # Parse parameters
         parameters = []
         if self.match('LPAREN'):
             if not self.match('RPAREN'):
                 while True:
-                    param = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected parameter name').value
+                    param = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected parameter name').value
                     parameters.append(param)
                     if not self.match('COMMA'):
                         break
@@ -441,7 +441,7 @@ class GeEzParser:
                 self.consume('RPAREN', 'Expected )')
             return InputNode(prompt)
         
-        if self.match('IDENTIFIER', 'AMHARIC_ID'):
+        if self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR'):
             name = self.previous().value
             # Check if this is a function call
             if self.match('LPAREN'):
