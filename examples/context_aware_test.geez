@@ -1,0 +1,26 @@
+# Test Context-Aware Built-in Functions
+# This should work just like English: int = 42; result = int("123")
+
+# Test variables with built-in function names
+አስተዋውቅ ቁጥር = 42
+አስተዋውቅ ጽሑፍ = "ሰላም"
+አስተዋውቅ ከፍተኛ = 100
+አስተዋውቅ ዠቅተኛ = 1
+
+ማተም "Variables:"
+ማተም "ቁጥር = " + ቁጥር
+ማተም "ጽሑፍ = " + ጽሑፍ
+ማተም "ከፍተኛ = " + ከፍተኛ
+ማተም "ዠቅተኛ = " + ዠቅተኛ
+
+# Test function calls with same names
+ማተም "\nFunction calls:"
+ማተም "ቁጥር('123') = " + ቁጥር("123")
+ማተም "ጽሑፍ(456) = " + ጽሑፍ(456)
+ማተም "ከፍተኛ(1, 5, 3) = " + ከፍተኛ(1, 5, 3)
+ማተም "ዠቅተኛ(1, 5, 3) = " + ዠቅተኛ(1, 5, 3)
+
+# Test mixing variables and functions
+አስተዋውቅ ውጤት = ቁጥር("789")
+ማተም "\nMixed usage:"
+ማተም "ውጤት = " + ውጤት

@@ -54,6 +54,16 @@ The Amharic script is **syllabic** - each character represents a consonant + vow
 | ግብአት | INPUT | input | `ግብአት("ስም: ")` |
 | ውጣ | EXIT | exit | `ውጣ` (in interactive mode) |
 
+### Built-in Functions
+| Amharic | English | Meaning | Example |
+|---------|---------|---------|----------|
+| ወሰን | RANGE | range | `ወሰን(5)` |
+| ዓይነት | TYPE | type | `ዓይነት(ቁጥር)` |
+| ቁጥር | INT | int | `ቁጥር("123")` |
+| ጽሑፍ | STR | str | `ጽሑፍ(123)` |
+| ከፍተኛ | MAX | max | `ከፍተኛ(1, 5, 3)` |
+| ዠቅተኛ | MIN | min | `ዠቅተኛ(1, 5, 3)` |
+
 ## 🛠️ Installation & Setup
 
 ### Prerequisites

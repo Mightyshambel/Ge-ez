@@ -172,6 +172,16 @@ class StringMethodNode(ASTNode):
         return f"StringMethod({self.method}, {self.string}, {self.args})"
 
 
+class BuiltinFunctionNode(ASTNode):
+    def __init__(self, function: str, args: List[ASTNode] = None):
+        self.function = function
+        self.args = args or []
+    
+    def __repr__(self):
+        return f"BuiltinFunction({self.function}, {self.args})"
+
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -494,14 +504,39 @@ class GeEzParser:
             name = self.previous().value
             # Check if this is a function call
             if self.match('LPAREN'):
-                arguments = []
-                if not self.match('RPAREN'):
-                    while True:
-                        arguments.append(self.parse_expression())
-                        if not self.match('COMMA'):
-                            break
-                    self.consume('RPAREN', 'Expected )')
-                return CallNode(name, arguments)
+                # Check if this is a built-in function
+                if name in ['ወሰን', 'ዓይነት', 'ቁጥር', 'ጽሑፍ', 'ከፍተኛ', 'ዠቅተኛ']:
+                    # Map Amharic names to token types
+                    function_map = {
+                        'ወሰን': 'RANGE',
+                        'ዓይነት': 'TYPE', 
+                        'ቁጥር': 'INT',
+                        'ጽሑፍ': 'STR',
+                        'ከፍተኛ': 'MAX',
+                        'ዠቅተኛ': 'MIN'
+                    }
+                    function_type = function_map[name]
+                    
+                    # Parse arguments
+                    args = []
+                    if not self.match('RPAREN'):
+                        while True:
+                            args.append(self.parse_expression())
+                            if not self.match('COMMA'):
+                                break
+                        self.consume('RPAREN', f'Expected ) after {name}')
+                    
+                    return BuiltinFunctionNode(function_type, args)
+                else:
+                    # Regular function call
+                    arguments = []
+                    if not self.match('RPAREN'):
+                        while True:
+                            arguments.append(self.parse_expression())
+                            if not self.match('COMMA'):
+                                break
+                        self.consume('RPAREN', 'Expected )')
+                    return CallNode(name, arguments)
             else:
                 return IdentifierNode(name)
         

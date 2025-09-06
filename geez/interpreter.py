@@ -8,7 +8,7 @@ from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
     FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
-    StringMethodNode
+    StringMethodNode, BuiltinFunctionNode
 )
 
 
@@ -69,6 +69,9 @@ class GeEzInterpreter:
         
         elif isinstance(node, StringMethodNode):
             return self.execute_string_method(node)
+        
+        elif isinstance(node, BuiltinFunctionNode):
+            return self.execute_builtin_function(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -361,6 +364,73 @@ class GeEzInterpreter:
         
         else:
             raise ValueError(f"Unknown string method: {node.method}")
+
+    def execute_builtin_function(self, node: BuiltinFunctionNode) -> Any:
+        """Execute built-in functions"""
+        # Evaluate all arguments first
+        args = [self.execute(arg) for arg in node.args]
+        
+        if node.function == 'RANGE':
+            if len(args) == 1:
+                # range(stop)
+                return list(range(int(args[0])))
+            elif len(args) == 2:
+                # range(start, stop)
+                return list(range(int(args[0]), int(args[1])))
+            elif len(args) == 3:
+                # range(start, stop, step)
+                return list(range(int(args[0]), int(args[1]), int(args[2])))
+            else:
+                raise ValueError("ወሰን function requires 1-3 arguments")
+        
+        elif node.function == 'TYPE':
+            if len(args) != 1:
+                raise ValueError("ዓይነት function requires exactly 1 argument")
+            value = args[0]
+            if isinstance(value, bool):
+                return "boolean"
+            elif isinstance(value, int):
+                return "integer"
+            elif isinstance(value, float):
+                return "number"
+            elif isinstance(value, str):
+                return "string"
+            elif isinstance(value, list):
+                return "list"
+            else:
+                return "unknown"
+        
+        elif node.function == 'INT':
+            if len(args) != 1:
+                raise ValueError("ቁጥር function requires exactly 1 argument")
+            try:
+                return int(float(args[0]))  # Convert to float first to handle "3.14"
+            except (ValueError, TypeError):
+                raise ValueError(f"Cannot convert '{args[0]}' to integer")
+        
+        elif node.function == 'STR':
+            if len(args) != 1:
+                raise ValueError("ጽሑፍ function requires exactly 1 argument")
+            return str(args[0])
+        
+        elif node.function == 'MAX':
+            if len(args) < 1:
+                raise ValueError("ከፍተኛ function requires at least 1 argument")
+            try:
+                return max(args)
+            except TypeError:
+                raise ValueError("ከፍተኛ function requires comparable values")
+        
+        elif node.function == 'MIN':
+            if len(args) < 1:
+                raise ValueError("ዠቅተኛ function requires at least 1 argument")
+            try:
+                return min(args)
+            except TypeError:
+                raise ValueError("ዠቅተኛ function requires comparable values")
+        
+        else:
+            raise ValueError(f"Unknown built-in function: {node.function}")
 
 
 class ReturnException(Exception):
