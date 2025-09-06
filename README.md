@@ -133,6 +133,18 @@ python main.py
 }
 ```
 
+### Comments
+```amharic
+# Single-line comment
+አስተዋውቅ ስም = "ግእዝ"  # Inline comment
+
+/* Multi-line comment
+   This can span multiple lines
+   and contains various content */
+አስተዋውቅ አድሜ = 25
+ማተም አድሜ
+```
+
 ### Lists and Arrays
 ```amharic
 # ዝርዝሮች እና ድርድሮች

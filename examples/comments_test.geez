@@ -1,0 +1,36 @@
+# Single-line comment test
+# This is a single-line comment
+አስተዋውቅ ስም = "ግእዝ"  # Inline comment
+ማተም ስም
+
+/* Multi-line comment test
+   This is a multi-line comment
+   It can span multiple lines
+   and contains various content */
+አስተዋውቅ አድሜ = 25
+ማተም አድሜ
+
+/* Another multi-line comment
+   with mixed content:
+   - Numbers: 123, 456
+   - Strings: "hello", "world"
+   - Amharic: ሰላም, እንደምን አለህ? */
+አስተዋውቅ ዝርዝር = [1, 2, 3]
+ማተም ዝርዝር
+
+# Mixed comments test
+አስተዋውቅ ቁጥር = 42  # Single-line after code
+ማተም ቁጥር
+
+/* 
+   Large multi-line comment
+   This comment demonstrates:
+   1. Multiple lines
+   2. Various formatting
+   3. Code documentation
+*/
+አስተዋውቅ ውጤት = ቁጥር("100")
+ማተም "ውጤት: " + ውጤት
+
+# Final test
+ማተም "All comment types working!"

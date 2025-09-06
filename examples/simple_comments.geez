@@ -1,0 +1,9 @@
+# Simple comment test
+አስተዋውቅ ስም = "ግእዝ"
+ማተም ስም
+
+/* Multi-line comment */
+አስተዋውቅ አድሜ = 25
+ማተም አድሜ
+
+ማተም "Comments working!"  # Inline comment

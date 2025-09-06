@@ -53,7 +53,8 @@ class GeEzLexer:
     
     # Token patterns
     TOKEN_PATTERNS = [
-        ('COMMENT', r'#.*'),                # Comments
+        ('MULTILINE_COMMENT', r'/\*[\s\S]*?\*/'), # Multi-line comments /* ... */
+        ('COMMENT', r'#.*'),                # Single-line comments
         ('NUMBER', r'\d+\.?\d*'),           # Numbers
         ('STRING', r'"[^"]*"'),             # Strings
         ('IDENTIFIER', r'[a-zA-Z_][a-zA-Z0-9_]*'),  # Identifiers
@@ -105,7 +106,7 @@ class GeEzLexer:
                     value = match.group(0)
                     
                     # Skip whitespace and comments but track position
-                    if token_type in ('WHITESPACE', 'COMMENT'):
+                    if token_type in ('WHITESPACE', 'COMMENT', 'MULTILINE_COMMENT'):
                         if '\n' in value:
                             self.current_line += value.count('\n')
                             self.current_column = 1
