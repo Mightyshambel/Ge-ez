@@ -14,11 +14,25 @@ This project aims to:
 
 - **Amharic Keywords**: Use familiar Amharic words for programming concepts
 - **Variable Declarations**: Declare variables with `አስተዋውቅ` (declare)
-- **Control Flow**: Use `ከሆነ` (if), `ማተምበለዚያ` (else), `በመሆኑ` (while)
+- **Control Flow**: Use `ከሆነ` (if), `አለበለዚያ` (else), `በመሆኑ` (while)
 - **Output**: Print with `ማተም` (print)
 - **Data Types**: Numbers, strings, and booleans (`እውነት`/`ሐሰት`)
 - **Operators**: Arithmetic (`+`, `-`, `*`, `/`) and logical (`እና`, `ወይም`, `አይደለም`)
 - **Comments**: Support for `#` comments
+
+## 📚 Amharic Script Reference
+
+For non-Amharic speakers, here's a comprehensive guide to the Amharic alphabet (Ge'ez script) used in this programming language:
+
+![Amharic Alphabet Chart](amharic-alphabet-chart.png)
+
+*This chart shows the Amharic syllabic characters (fidel), numerals, and punctuation marks with their Latin transliterations.*
+
+### Understanding Amharic Characters in Code
+
+The Amharic script is **syllabic** - each character represents a consonant + vowel combination. For example:
+- **ሀ** (Ha), **ሁ** (Hu), **ሂ** (Hi), **ሃ** (Haa), **ሄ** (Hee), **ህ** (He), **ሆ** (Ho)
+- **ለ** (La), **ሉ** (Lu), **ሊ** (Li), **ላ** (Laa), **ሌ** (Lee), **ል** (Le), **ሎ** (Lo)
 
 ## 📚 Amharic Keywords Reference
 
@@ -26,9 +40,13 @@ This project aims to:
 |---------|---------|---------|---------|
 | አስተዋውቅ | VAR | declare/let | `አስተዋውቅ ስም = "ግእዝ"` |
 | ከሆነ | IF | if | `ከሆነ አድሜ > 18` |
-| ማተምበለዚያ | ELSE | else | `ማተምበለዚያ { ማተም "ልጅ" }` |
+| አለበለዚያ | ELSE | else | `አለበለዚያ { ማተም "ልጅ" }` |
 | በመሆኑ | WHILE | while | `በመሆኑ ቆጠራ < 5` |
+| ለ | FOR | for | `ለ i በ 5 { ማተም i }` |
+| በ | IN | in | `ለ i በ 5` |
 | ማተም | PRINT | print | `ማተም "ሰላም"` |
+| ተግባር | FUNCTION | function | `ተግባር ስም() { ... }` |
+| ተመለስ | RETURN | return | `ተመለስ ውጤት` |
 | እውነት | TRUE | true | `አስተዋውቅ እውነት_ነው = እውነት` |
 | ሐሰት | FALSE | false | `አስተዋውቅ ሐሰት_ነው = ሐሰት` |
 | እና | AND | and | `ሀ > 0 እና ሀ < 10` |
