@@ -6,8 +6,8 @@ This is the main package for the ግእዝ Amharic programming language interpre
 Features:
 - Amharic keywords for programming concepts
 - Variable declarations with አስተዋውቅ
-- Control flow with ከሆነ, አለበለዚያ, በመሆኑ
-- Output with አለ
+- Control flow with ከሆነ, ማተምበለዚያ, በመሆኑ
+- Output with ማተም
 - Support for numbers, strings, and booleans
 - Arithmetic and logical operators
 
@@ -15,7 +15,7 @@ Usage:
     from geez.interpreter import GeEzInterpreter
     
     interpreter = GeEzInterpreter()
-    result = interpreter.interpret('አለ "ሰላም አማርኛ!"')
+    result = interpreter.interpret('ማተም "ሰላም አማርኛ!"')
 """
 
 __version__ = "0.1.0"

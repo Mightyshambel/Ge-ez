@@ -34,7 +34,7 @@ Convert input text into a list of tokens.
 from geez.lexer import GeEzLexer
 
 lexer = GeEzLexer()
-tokens = lexer.tokenize('አለ "ሰላም"')
+tokens = lexer.tokenize('ማተም "ሰላም"')
 ```
 
 ##### `get_tokens(self) -> List[Token]`
@@ -60,9 +60,9 @@ Represents a single token in the language.
 |---------|------------|-------------|
 | አስተዋውቅ | VAR | Variable declaration |
 | ከሆነ | IF | Conditional statement |
-| አለበለዚያ | ELSE | Else clause |
+| ማተምበለዚያ | ELSE | Else clause |
 | በመሆኑ | WHILE | While loop |
-| አለ | PRINT | Print statement |
+| ማተም | PRINT | Print statement |
 | እውነት | TRUE | Boolean true |
 | ሐሰት | FALSE | Boolean false |
 | እና | AND | Logical AND |
@@ -96,7 +96,7 @@ from geez.lexer import GeEzLexer
 from geez.parser import GeEzParser
 
 lexer = GeEzLexer()
-tokens = lexer.tokenize('አለ "ሰላም"')
+tokens = lexer.tokenize('ማተም "ሰላም"')
 parser = GeEzParser(tokens)
 ast = parser.parse()
 ```
@@ -126,7 +126,7 @@ Interpret Ge-ez code directly.
 from geez.interpreter import GeEzInterpreter
 
 interpreter = GeEzInterpreter()
-result = interpreter.interpret('አለ "ሰላም አማርኛ!"')
+result = interpreter.interpret('ማተም "ሰላም አማርኛ!"')
 ```
 
 ##### `execute(self, node: ASTNode) -> Any`
@@ -314,7 +314,7 @@ interpreter = GeEzInterpreter()
 # Simple program
 code = '''
 አስተዋውቅ ስም = "ግእዝ"
-አለ ስም
+ማተም ስም
 '''
 
 # Execute

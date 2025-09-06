@@ -175,12 +175,12 @@ class GeEzParser:
         return AssignmentNode(identifier, value)
     
     def parse_print_statement(self) -> ASTNode:
-        """Parse print statement: አለ expression"""
+        """Parse print statement: ማተም expression"""
         expression = self.parse_expression()
         return PrintNode(expression)
     
     def parse_if_statement(self) -> ASTNode:
-        """Parse if statement: ከሆነ condition { statements } አለበለዚያ { statements }"""
+        """Parse if statement: ከሆነ condition { statements } ማተምበለዚያ { statements }"""
         condition = self.parse_expression()
         
         then_block = []

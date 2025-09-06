@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Core Language Features**
-  - Amharic keyword support (`አስተዋውቅ`, `ከሆነ`, `አለበለዚያ`, `በመሆኑ`, `አለ`)
+  - Amharic keyword support (`አስተዋውቅ`, `ከሆነ`, `ማተምበለዚያ`, `በመሆኑ`, `ማተም`)
   - Variable declarations and assignments
   - Print statements
   - Conditional statements (if/else)

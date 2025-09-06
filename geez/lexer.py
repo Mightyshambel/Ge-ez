@@ -34,7 +34,7 @@ class GeEzLexer:
         'ተግባር': 'FUNCTION',    # function
         'እውነት': 'TRUE',        # true
         'ሐሰት': 'FALSE',        # false
-        'አለ': 'PRINT',         # print
+        'ማተም': 'PRINT',         # print
         'እና': 'AND',           # and
         'ወይም': 'OR',           # or
         'አይደለም': 'NOT',       # not
