@@ -1,19 +1,29 @@
-# Ge-ez: Amharic Programming Language
+# ግእዝ: Amharic Programming Language
 
-This is the main package for the Ge-ez Amharic programming language interpreter.
+"""
+This is the main package for the ግእዝ Amharic programming language interpreter.
 
-## Features
+Features:
 - Amharic keywords for programming concepts
-- Variable declarations with `አስተዋውቅ`
-- Control flow with `ከሆነ`, `አለበለዚያ`, `በመሆኑ`
-- Output with `አለ`
+- Variable declarations with አስተዋውቅ
+- Control flow with ከሆነ, አለበለዚያ, በመሆኑ
+- Output with አለ
 - Support for numbers, strings, and booleans
 - Arithmetic and logical operators
 
-## Usage
-```python
-from geez.interpreter import GeEzInterpreter
+Usage:
+    from geez.interpreter import GeEzInterpreter
+    
+    interpreter = GeEzInterpreter()
+    result = interpreter.interpret('አለ "ሰላም አማርኛ!"')
+"""
 
-interpreter = GeEzInterpreter()
-result = interpreter.interpret('አለ "ሰላም አማርኛ!"')
-```
+__version__ = "0.1.0"
+__author__ = "Mighty Shambel"
+__description__ = "Amharic Programming Language"
+
+from .lexer import GeEzLexer, Token
+from .parser import GeEzParser
+from .interpreter import GeEzInterpreter
+
+__all__ = ['GeEzLexer', 'Token', 'GeEzParser', 'GeEzInterpreter']

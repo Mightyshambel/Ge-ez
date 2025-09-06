@@ -39,6 +39,7 @@ class GeEzLexer:
         'ወይም': 'OR',           # or
         'አይደለም': 'NOT',       # not
         'ውጣ': 'EXIT',          # exit
+        'ይጠራ': 'CALL',         # call
     }
     
     # Token patterns

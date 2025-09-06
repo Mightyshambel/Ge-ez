@@ -6,7 +6,8 @@ Executes the Abstract Syntax Tree (AST)
 from typing import Any, Dict, List
 from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
-    BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode
+    BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
+    FunctionNode, CallNode, ReturnNode
 )
 
 
@@ -15,6 +16,7 @@ class GeEzInterpreter:
     
     def __init__(self):
         self.variables: Dict[str, Any] = {}
+        self.functions: Dict[str, FunctionNode] = {}
     
     def interpret(self, code: str) -> Any:
         """Interpret Ge-ez code"""
@@ -73,6 +75,15 @@ class GeEzInterpreter:
         elif isinstance(node, WhileNode):
             return self.execute_while(node)
         
+        elif isinstance(node, FunctionNode):
+            return self.execute_function_declaration(node)
+        
+        elif isinstance(node, CallNode):
+            return self.execute_function_call(node)
+        
+        elif isinstance(node, ReturnNode):
+            return self.execute_return(node)
+        
         else:
             raise RuntimeError(f"Unknown node type: {type(node)}")
     
@@ -82,6 +93,9 @@ class GeEzInterpreter:
         right = self.execute(node.right)
         
         if node.operator == '+':
+            # Handle string concatenation
+            if isinstance(left, str) or isinstance(right, str):
+                return str(left) + str(right)
             return left + right
         elif node.operator == '-':
             return left - right
@@ -168,3 +182,51 @@ class GeEzInterpreter:
     def clear_variables(self) -> None:
         """Clear all variables"""
         self.variables.clear()
+    
+    def execute_function_declaration(self, node: FunctionNode) -> None:
+        """Execute function declaration"""
+        self.functions[node.name] = node
+        return None
+    
+    def execute_function_call(self, node: CallNode) -> Any:
+        """Execute function call"""
+        if node.name not in self.functions:
+            raise RuntimeError(f"Undefined function: {node.name}")
+        
+        function = self.functions[node.name]
+        
+        # Check argument count
+        if len(node.arguments) != len(function.parameters):
+            raise RuntimeError(f"Function {node.name} expects {len(function.parameters)} arguments, got {len(node.arguments)}")
+        
+        # Save current scope
+        old_variables = self.variables.copy()
+        
+        # Create new scope with parameters
+        self.variables = {}
+        for param, arg in zip(function.parameters, node.arguments):
+            self.variables[param] = self.execute(arg)
+        
+        # Execute function body
+        result = None
+        try:
+            for statement in function.body:
+                result = self.execute(statement)
+        except ReturnException as e:
+            result = e.value
+        
+        # Restore old scope
+        self.variables = old_variables
+        
+        return result
+    
+    def execute_return(self, node: ReturnNode) -> Any:
+        """Execute return statement"""
+        value = self.execute(node.value) if node.value else None
+        raise ReturnException(value)
+
+
+class ReturnException(Exception):
+    """Exception used for return statements"""
+    def __init__(self, value: Any):
+        self.value = value

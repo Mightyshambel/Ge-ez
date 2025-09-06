@@ -99,6 +99,33 @@ class WhileNode(ASTNode):
         return f"While({self.condition}, {self.block})"
 
 
+class FunctionNode(ASTNode):
+    def __init__(self, name: str, parameters: List[str], body: List[ASTNode]):
+        self.name = name
+        self.parameters = parameters
+        self.body = body
+    
+    def __repr__(self):
+        return f"Function({self.name}, {self.parameters}, {self.body})"
+
+
+class CallNode(ASTNode):
+    def __init__(self, name: str, arguments: List[ASTNode]):
+        self.name = name
+        self.arguments = arguments
+    
+    def __repr__(self):
+        return f"Call({self.name}, {self.arguments})"
+
+
+class ReturnNode(ASTNode):
+    def __init__(self, value: Optional[ASTNode]):
+        self.value = value
+    
+    def __repr__(self):
+        return f"Return({self.value})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -127,8 +154,16 @@ class GeEzParser:
             return self.parse_if_statement()
         elif self.match('WHILE'):
             return self.parse_while_statement()
+        elif self.match('FUNCTION'):
+            return self.parse_function_declaration()
+        elif self.match('RETURN'):
+            return self.parse_return_statement()
         elif self.match('IDENTIFIER', 'AMHARIC_ID'):
-            return self.parse_assignment()
+            # Check if this is a function call or assignment
+            if self.check('LPAREN'):
+                return self.parse_function_call_statement()
+            else:
+                return self.parse_assignment()
         else:
             return self.parse_expression()
     
@@ -178,6 +213,51 @@ class GeEzParser:
                     block.append(stmt)
         
         return WhileNode(condition, block)
+    
+    def parse_function_declaration(self) -> ASTNode:
+        """Parse function declaration: ተግባር name (parameters) { body }"""
+        name = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected function name').value
+        
+        # Parse parameters
+        parameters = []
+        if self.match('LPAREN'):
+            if not self.match('RPAREN'):
+                while True:
+                    param = self.consume('IDENTIFIER', 'AMHARIC_ID', 'Expected parameter name').value
+                    parameters.append(param)
+                    if not self.match('COMMA'):
+                        break
+                self.consume('RPAREN', 'Expected )')
+        
+        # Parse function body
+        body = []
+        if self.match('LBRACE'):
+            while not self.match('RBRACE') and not self.is_at_end():
+                stmt = self.parse_statement()
+                if stmt:
+                    body.append(stmt)
+        
+        return FunctionNode(name, parameters, body)
+    
+    def parse_return_statement(self) -> ASTNode:
+        """Parse return statement: ተመለስ expression"""
+        value = None
+        if not self.match('SEMICOLON', 'NEWLINE'):
+            value = self.parse_expression()
+        return ReturnNode(value)
+    
+    def parse_function_call_statement(self) -> ASTNode:
+        """Parse function call as statement"""
+        name = self.previous().value
+        arguments = []
+        if self.match('LPAREN'):
+            if not self.match('RPAREN'):
+                while True:
+                    arguments.append(self.parse_expression())
+                    if not self.match('COMMA'):
+                        break
+                self.consume('RPAREN', 'Expected )')
+        return CallNode(name, arguments)
     
     def parse_assignment(self) -> ASTNode:
         """Parse assignment: identifier = expression"""
@@ -281,7 +361,19 @@ class GeEzParser:
             return BooleanNode(False)
         
         if self.match('IDENTIFIER', 'AMHARIC_ID'):
-            return IdentifierNode(self.previous().value)
+            name = self.previous().value
+            # Check if this is a function call
+            if self.match('LPAREN'):
+                arguments = []
+                if not self.match('RPAREN'):
+                    while True:
+                        arguments.append(self.parse_expression())
+                        if not self.match('COMMA'):
+                            break
+                    self.consume('RPAREN', 'Expected )')
+                return CallNode(name, arguments)
+            else:
+                return IdentifierNode(name)
         
         if self.match('LPAREN'):
             expr = self.parse_expression()
