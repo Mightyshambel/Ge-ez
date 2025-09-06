@@ -42,6 +42,12 @@ class GeEzLexer:
         'ይጠራ': 'CALL',         # call
         'በ': 'IN',              # in (for loops)
         'ግብአት': 'INPUT',        # input
+        'ርዝመት': 'LENGTH',       # length
+        'ክፍል': 'SPLIT',          # split
+        'አገናኝ': 'JOIN',          # join
+        'ወደላይ': 'UPPER',        # upper
+        'ወደታች': 'LOWER',        # lower
+        'ተክ': 'REPLACE',         # replace
     }
     
     # Token patterns

@@ -7,7 +7,8 @@ from typing import Any, Dict, List
 from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
-    FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode
+    FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
+    StringMethodNode
 )
 
 
@@ -65,6 +66,9 @@ class GeEzInterpreter:
         
         elif isinstance(node, InputNode):
             return self.execute_input(node)
+        
+        elif isinstance(node, StringMethodNode):
+            return self.execute_string_method(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -277,7 +281,7 @@ class GeEzInterpreter:
         return list_value[index]
     
     def execute_input(self, node: InputNode) -> str:
-        """Execute input function: አይተ() or አይተ(prompt)"""
+        """Execute input function: ግብአት() or ግብአት(prompt)"""
         if node.prompt:
             prompt_value = self.execute(node.prompt)
             if isinstance(prompt_value, str):
@@ -288,6 +292,64 @@ class GeEzInterpreter:
             user_input = input()
         
         return user_input
+    
+    def execute_string_method(self, node: StringMethodNode) -> Any:
+        """Execute string methods"""
+        string_value = self.execute(node.string)
+        
+        # Convert to string if not already (except for JOIN method)
+        if node.method != 'JOIN' and not isinstance(string_value, str):
+            string_value = str(string_value)
+        
+        if node.method == 'LENGTH':
+            return len(string_value)
+        
+        elif node.method == 'UPPER':
+            return string_value.upper()
+        
+        elif node.method == 'LOWER':
+            return string_value.lower()
+        
+        elif node.method == 'SPLIT':
+            if node.args:
+                separator = self.execute(node.args[0])
+                if not isinstance(separator, str):
+                    separator = str(separator)
+                return string_value.split(separator)
+            else:
+                return string_value.split()
+        
+        elif node.method == 'JOIN':
+            if node.args:
+                separator = self.execute(node.args[0])
+                if not isinstance(separator, str):
+                    separator = str(separator)
+                # For JOIN, the string_value should be a list
+                if isinstance(string_value, list):
+                    return separator.join(str(item) for item in string_value)
+                else:
+                    raise ValueError("አገናኝ method requires a list as the first argument, got: " + str(type(string_value)))
+            else:
+                # Default join with space
+                if isinstance(string_value, list):
+                    return ' '.join(str(item) for item in string_value)
+                else:
+                    raise ValueError("አገናኝ method requires a list as the first argument")
+        
+        elif node.method == 'REPLACE':
+            if len(node.args) >= 2:
+                old_str = self.execute(node.args[0])
+                new_str = self.execute(node.args[1])
+                if not isinstance(old_str, str):
+                    old_str = str(old_str)
+                if not isinstance(new_str, str):
+                    new_str = str(new_str)
+                return string_value.replace(old_str, new_str)
+            else:
+                raise ValueError("ተክ method requires two arguments: old_string, new_string")
+        
+        else:
+            raise ValueError(f"Unknown string method: {node.method}")
 
 
 class ReturnException(Exception):

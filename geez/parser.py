@@ -161,6 +161,16 @@ class ForNode(ASTNode):
         return f"For({self.variable}, {self.iterable}, {self.body})"
 
 
+class StringMethodNode(ASTNode):
+    def __init__(self, method: str, string: ASTNode, args: List[ASTNode] = None):
+        self.method = method
+        self.string = string
+        self.args = args or []
+    
+    def __repr__(self):
+        return f"StringMethod({self.method}, {self.string}, {self.args})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -433,13 +443,38 @@ class GeEzParser:
             return BooleanNode(False)
         
         if self.match('INPUT'):
-            # Parse input function: አይተ() or አይተ(prompt)
-            self.consume('LPAREN', 'Expected ( after አይተ')
+            # Parse input function: ግብአት() or ግብአት(prompt)
+            self.consume('LPAREN', 'Expected ( after ግብአት')
             prompt = None
             if not self.match('RPAREN'):
                 prompt = self.parse_expression()
                 self.consume('RPAREN', 'Expected )')
             return InputNode(prompt)
+        
+        # Parse string methods
+        if self.match('LENGTH', 'SPLIT', 'JOIN', 'UPPER', 'LOWER', 'REPLACE'):
+            method = self.previous().type  # Use token type instead of value
+            self.consume('LPAREN', f'Expected ( after {method}')
+            
+            # Parse the string argument
+            string_arg = self.parse_expression()
+            
+            # Parse additional arguments for methods that need them
+            args = []
+            if method == 'SPLIT':
+                if self.match('COMMA'):
+                    args.append(self.parse_expression())
+            elif method == 'JOIN':
+                if self.match('COMMA'):
+                    args.append(self.parse_expression())  # separator
+            elif method == 'REPLACE':
+                if self.match('COMMA'):
+                    args.append(self.parse_expression())  # old_string
+                    if self.match('COMMA'):
+                        args.append(self.parse_expression())  # new_string
+            
+            self.consume('RPAREN', f'Expected ) after {method}')
+            return StringMethodNode(method, string_arg, args)
         
         if self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR'):
             name = self.previous().value
