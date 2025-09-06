@@ -27,7 +27,8 @@ class GeEzLexer:
     KEYWORDS = {
         'አስተዋውቅ': 'VAR',      # declare/let
         'ከሆነ': 'IF',           # if
-        'አለበለዚያ': 'ELSE',      # else
+        'ካልሆነ': 'ELSE',         # else
+        'አለበለዚያ': 'ELIF',      # elif
         'ለ': 'FOR',             # for
         'በመሆኑ': 'WHILE',       # while
         'ተመለስ': 'RETURN',      # return

@@ -164,15 +164,26 @@ class GeEzInterpreter:
         return value
     
     def execute_if(self, node: IfNode) -> Any:
-        """Execute if statement"""
+        """Execute if statement with elif support"""
         condition = self.execute(node.condition)
         
         if condition:
             for statement in node.then_block:
                 self.execute(statement)
-        elif node.else_block:
-            for statement in node.else_block:
-                self.execute(statement)
+        else:
+            # Check elif blocks
+            elif_executed = False
+            for elif_condition, elif_block in node.elif_blocks:
+                if self.execute(elif_condition):
+                    for statement in elif_block:
+                        self.execute(statement)
+                    elif_executed = True
+                    break
+            
+            # Execute else block if no elif was executed
+            if not elif_executed and node.else_block:
+                for statement in node.else_block:
+                    self.execute(statement)
         
         return None
     

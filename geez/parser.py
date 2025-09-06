@@ -106,13 +106,14 @@ class PrintNode(ASTNode):
 
 
 class IfNode(ASTNode):
-    def __init__(self, condition: ASTNode, then_block: List[ASTNode], else_block: Optional[List[ASTNode]] = None):
+    def __init__(self, condition: ASTNode, then_block: List[ASTNode], elif_blocks: List[tuple] = None, else_block: Optional[List[ASTNode]] = None):
         self.condition = condition
         self.then_block = then_block
+        self.elif_blocks = elif_blocks or []  # List of (condition, block) tuples
         self.else_block = else_block
     
     def __repr__(self):
-        return f"If({self.condition}, {self.then_block}, {self.else_block})"
+        return f"If({self.condition}, {self.then_block}, elif:{self.elif_blocks}, else:{self.else_block})"
 
 
 class WhileNode(ASTNode):
@@ -227,7 +228,7 @@ class GeEzParser:
         return PrintNode(expression)
     
     def parse_if_statement(self) -> ASTNode:
-        """Parse if statement: ከሆነ condition { statements } ማተምበለዚያ { statements }"""
+        """Parse if statement: ከሆነ condition { statements } አለበለዚያ condition { statements } ካልሆነ { statements }"""
         condition = self.parse_expression()
         
         then_block = []
@@ -237,6 +238,19 @@ class GeEzParser:
                 if stmt:
                     then_block.append(stmt)
         
+        # Parse elif blocks
+        elif_blocks = []
+        while self.match('ELIF'):
+            elif_condition = self.parse_expression()
+            elif_block = []
+            if self.match('LBRACE'):
+                while not self.match('RBRACE') and not self.is_at_end():
+                    stmt = self.parse_statement()
+                    if stmt:
+                        elif_block.append(stmt)
+            elif_blocks.append((elif_condition, elif_block))
+        
+        # Parse else block
         else_block = None
         if self.match('ELSE'):
             else_block = []
@@ -246,7 +260,7 @@ class GeEzParser:
                     if stmt:
                         else_block.append(stmt)
         
-        return IfNode(condition, then_block, else_block)
+        return IfNode(condition, then_block, elif_blocks, else_block)
     
     def parse_while_statement(self) -> ASTNode:
         """Parse while statement: በመሆኑ condition { statements }"""
