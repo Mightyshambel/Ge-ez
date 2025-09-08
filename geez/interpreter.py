@@ -10,6 +10,7 @@ from .parser import (
     FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
     StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode, FileOperationNode
 )
+from .errors import AmharicErrorMessages
 
 
 class GeEzInterpreter:
@@ -48,7 +49,11 @@ class GeEzInterpreter:
         except Exception as e:
             # Only catch exceptions if we're not in a try-catch context
             if not self.in_try_catch:
-                print(f"ስህተት: {e}")
+                error_msg = AmharicErrorMessages.format_error_with_suggestion(
+                    'runtime_error',
+                    str(e)
+                )
+                print(error_msg)
             else:
                 # Re-raise the exception so it can be caught by try-catch blocks
                 raise e
@@ -141,7 +146,11 @@ class GeEzInterpreter:
             return left * right
         elif node.operator == '/':
             if right == 0:
-                raise RuntimeError("Division by zero")
+                error_msg = AmharicErrorMessages.format_error_with_suggestion(
+                    'division_by_zero',
+                    AmharicErrorMessages.get_interpreter_error('division_by_zero')
+                )
+                raise RuntimeError(error_msg)
             return left / right
         elif node.operator == '==':
             return left == right
@@ -240,7 +249,12 @@ class GeEzInterpreter:
         if name in self.variables:
             return self.variables[name]
         else:
-            raise RuntimeError(f"Undefined variable: {name}")
+            error_msg = AmharicErrorMessages.format_error_with_suggestion(
+                'undefined_variable',
+                AmharicErrorMessages.get_interpreter_error('undefined_variable', variable=name),
+                variable=name
+            )
+            raise RuntimeError(error_msg)
     
     def set_variable(self, name: str, value: Any) -> None:
         """Set variable value"""
@@ -258,13 +272,24 @@ class GeEzInterpreter:
     def execute_function_call(self, node: CallNode) -> Any:
         """Execute function call"""
         if node.name not in self.functions:
-            raise RuntimeError(f"Undefined function: {node.name}")
+            error_msg = AmharicErrorMessages.format_error_with_suggestion(
+                'undefined_function',
+                AmharicErrorMessages.get_interpreter_error('undefined_function', function=node.name),
+                function=node.name
+            )
+            raise RuntimeError(error_msg)
         
         function = self.functions[node.name]
         
         # Check argument count
         if len(node.arguments) != len(function.parameters):
-            raise RuntimeError(f"Function {node.name} expects {len(function.parameters)} arguments, got {len(node.arguments)}")
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'argument_count_mismatch',
+                function=node.name,
+                expected=len(function.parameters),
+                actual=len(node.arguments)
+            )
+            raise RuntimeError(error_msg)
         
         # Save current scope
         old_variables = self.variables.copy()
@@ -309,7 +334,15 @@ class GeEzInterpreter:
         
         index = int(index_value)
         if index < 0 or index >= len(list_value):
-            raise IndexError(f"List index {index} out of range (list has {len(list_value)} elements)")
+            error_msg = AmharicErrorMessages.format_error_with_suggestion(
+                'index_out_of_range',
+                AmharicErrorMessages.get_interpreter_error(
+                    'index_error',
+                    index=index,
+                    length=len(list_value)
+                )
+            )
+            raise IndexError(error_msg)
         
         return list_value[index]
     

@@ -1,0 +1,10 @@
+# Syntax Error Test - ግእዝ
+# Testing syntax error messages
+
+ማተም "Testing syntax errors..."
+
+# This will cause a syntax error - missing closing brace
+አስተዋውቅ ቁጥር = 10
+ከሆነ ቁጥር > 5 {
+    ማተም "Greater than 5"
+# Missing closing brace }

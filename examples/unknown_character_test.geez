@@ -1,0 +1,7 @@
+# Unknown Character Test - ግእዝ
+# Testing unknown character error messages
+
+ማተም "Testing unknown character error..."
+አስተዋውቅ ቁጥር = 10
+# This will cause an unknown character error
+@ አስተዋውቅ ሌላ_ቁጥር = 20

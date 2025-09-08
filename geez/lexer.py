@@ -5,6 +5,7 @@ Handles lexical analysis for Amharic programming language
 
 import re
 from typing import List, Tuple, Optional
+from .errors import AmharicErrorMessages
 
 
 class Token:
@@ -153,7 +154,13 @@ class GeEzLexer:
                 # Handle unknown characters
                 char = text[position]
                 if char.strip():  # Only error on non-whitespace
-                    raise SyntaxError(f"Unknown character '{char}' at line {self.current_line}, column {self.current_column}")
+                    error_msg = AmharicErrorMessages.get_lexer_error(
+                        'unknown_character',
+                        char=char,
+                        line=self.current_line,
+                        column=self.current_column
+                    )
+                    raise SyntaxError(error_msg)
                 position += 1
         
         return self.tokens

@@ -5,6 +5,7 @@ Builds Abstract Syntax Tree (AST) from tokens
 
 from typing import List, Optional, Union
 from .lexer import Token
+from .errors import AmharicErrorMessages
 
 
 class ASTNode:
@@ -258,8 +259,8 @@ class GeEzParser:
     
     def parse_variable_declaration(self) -> ASTNode:
         """Parse variable declaration: አስተዋውቅ identifier = expression"""
-        identifier = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected identifier').value
-        self.consume('ASSIGN', 'Expected =')
+        identifier = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', message='Expected identifier').value
+        self.consume('ASSIGN', message='Expected =')
         value = self.parse_expression()
         return AssignmentNode(identifier, value)
     
@@ -318,13 +319,19 @@ class GeEzParser:
     
     def parse_for_statement(self) -> ASTNode:
         """Parse for statement: ለ variable በ iterable { body }"""
-        variable = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected variable name').value
+        variable = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', message='Expected variable name').value
         
         # Skip በ keyword
         if self.match('IN'):
             pass  # Skip the በ keyword
         else:
-            raise SyntaxError("Expected በ keyword")
+            error_msg = AmharicErrorMessages.get_parser_error(
+                'expected_token',
+                expected='በ',
+                line=self.peek().line,
+                column=self.peek().column
+            )
+            raise SyntaxError(error_msg)
         
         # Parse iterable (for now, just a simple range or list)
         iterable = self.parse_expression()
@@ -341,18 +348,18 @@ class GeEzParser:
     
     def parse_function_declaration(self) -> ASTNode:
         """Parse function declaration: ተግባር name (parameters) { body }"""
-        name = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected function name').value
+        name = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', message='Expected function name').value
         
         # Parse parameters
         parameters = []
         if self.match('LPAREN'):
             if not self.match('RPAREN'):
                 while True:
-                    param = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'Expected parameter name').value
+                    param = self.consume('IDENTIFIER', 'AMHARIC_ID', 'FOR', message='Expected parameter name').value
                     parameters.append(param)
                     if not self.match('COMMA'):
                         break
-                self.consume('RPAREN', 'Expected )')
+                self.consume('RPAREN', message='Expected )')
         
         # Parse function body
         body = []
@@ -381,13 +388,13 @@ class GeEzParser:
                     arguments.append(self.parse_expression())
                     if not self.match('COMMA'):
                         break
-                self.consume('RPAREN', 'Expected )')
+                self.consume('RPAREN', message='Expected )')
         return CallNode(name, arguments)
     
     def parse_assignment(self) -> ASTNode:
         """Parse assignment: identifier = expression"""
         identifier = self.previous().value
-        self.consume('ASSIGN', 'Expected =')
+        self.consume('ASSIGN', message='Expected =')
         value = self.parse_expression()
         return AssignmentNode(identifier, value)
     
@@ -503,7 +510,7 @@ class GeEzParser:
             prompt = None
             if not self.match('RPAREN'):
                 prompt = self.parse_expression()
-                self.consume('RPAREN', 'Expected )')
+                self.consume('RPAREN', message='Expected )')
             return InputNode(prompt)
         
         # Parse file operations
@@ -570,7 +577,7 @@ class GeEzParser:
                             arguments.append(self.parse_expression())
                             if not self.match('COMMA'):
                                 break
-                        self.consume('RPAREN', 'Expected )')
+                        self.consume('RPAREN', message='Expected )')
                     return CallNode(name, arguments)
             else:
                 return IdentifierNode(name)
@@ -588,10 +595,16 @@ class GeEzParser:
                     elements.append(self.parse_expression())
                     if not self.match('COMMA'):
                         break
-                self.consume('RBRACKET', 'Expected ]')
+                self.consume('RBRACKET', message='Expected ]')
             return ListNode(elements)
         
-        raise SyntaxError(f"Unexpected token: {self.peek()}")
+        error_msg = AmharicErrorMessages.get_parser_error(
+            'unexpected_token',
+            token=self.peek().value,
+            line=self.peek().line,
+            column=self.peek().column
+        )
+        raise SyntaxError(error_msg)
     
     def match(self, *token_types: str) -> bool:
         """Check if current token matches any of the given types"""
@@ -633,7 +646,61 @@ class GeEzParser:
             if self.check(token_type):
                 return self.advance()
         
-        raise SyntaxError(f"{message} at line {self.peek().line}, column {self.peek().column}")
+        # Create enhanced error message
+        if message == "Expected token":
+            if len(token_types) == 1:
+                expected = token_types[0]
+            else:
+                # Map token types to more readable Amharic names
+                token_names = []
+                for token_type in token_types:
+                    if token_type == 'IDENTIFIER':
+                        token_names.append('የተለዋዋጭ ስም')
+                    elif token_type == 'AMHARIC_ID':
+                        token_names.append('የአማርኛ ስም')
+                    elif token_type == 'FOR':
+                        token_names.append('ለ')
+                    elif token_type == 'STRING':
+                        token_names.append('ገላጭ')
+                    elif token_type == 'NUMBER':
+                        token_names.append('ቁጥር')
+                    else:
+                        token_names.append(token_type)
+                expected = f"ከ {', '.join(token_names)} ውስጥ አንዱ"
+            
+            error_msg = AmharicErrorMessages.get_parser_error(
+                'expected_token',
+                expected=expected,
+                line=self.peek().line,
+                column=self.peek().column
+            )
+        else:
+            # Handle custom messages
+            if message == "Expected identifier":
+                expected = "የተለዋዋጭ ስም"
+            elif message == "Expected variable name":
+                expected = "የተለዋዋጭ ስም"
+            elif message == "Expected function name":
+                expected = "የተግባር ስም"
+            elif message == "Expected parameter name":
+                expected = "የነጋሪ እሴት ስም"
+            elif message == "Expected )":
+                expected = ")"
+            elif message == "Expected ]":
+                expected = "]"
+            elif message == "Expected =":
+                expected = "="
+            else:
+                expected = message
+            
+            error_msg = AmharicErrorMessages.get_parser_error(
+                'expected_token',
+                expected=expected,
+                line=self.peek().line,
+                column=self.peek().column
+            )
+        
+        raise SyntaxError(error_msg)
     
     def parse_try_catch_statement(self) -> ASTNode:
         """Parse try-catch-finally statement: ሞክር { statements } ያዝ exception_type variable { statements } በመጨረሻ { statements }"""
@@ -658,7 +725,7 @@ class GeEzParser:
                     exception_type = self.consume('IDENTIFIER', 'AMHARIC_ID', 'STRING', message='Expected exception type').value
                     if self.match('COMMA'):
                         variable_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected variable name').value
-                    self.consume('RPAREN', 'Expected )')
+                    self.consume('RPAREN', message='Expected )')
                 else:
                     # Empty parentheses - no exception type or variable
                     pass

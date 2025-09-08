@@ -1,0 +1,51 @@
+# Enhanced Error Messages Test - ግእዝ
+# Testing Amharic error messages with context and suggestions
+
+ማተም "=== Testing Enhanced Error Messages ==="
+
+# Test 1: Undefined variable error
+ማተም "Testing undefined variable error..."
+ሞክር {
+    አስተዋውቅ ውጤት = ያልተገለጸ_ተለዋዋጭ
+} ያዝ {
+    ማተም "Undefined variable error caught!"
+}
+
+# Test 2: Division by zero error
+ማተም "Testing division by zero error..."
+ሞክር {
+    አስተዋውቅ ቁጥር = 10 / 0
+} ያዝ {
+    ማተም "Division by zero error caught!"
+}
+
+# Test 3: Index out of range error
+ማተም "Testing index out of range error..."
+ሞክር {
+    አስተዋውቅ ዝርዝር = [1, 2, 3]
+    አስተዋውቅ አካል = ዝርዝር[10]
+} ያዝ {
+    ማተም "Index out of range error caught!"
+}
+
+# Test 4: Undefined function error
+ማተም "Testing undefined function error..."
+ሞክር {
+    ያልተገለጸ_ተግባር()
+} ያዝ {
+    ማተም "Undefined function error caught!"
+}
+
+# Test 5: Function argument mismatch error
+ማተም "Testing function argument mismatch error..."
+ተግባር ምሳሌ(ሀ, ለ) {
+    ተመለስ ሀ + ለ
+}
+
+ሞክር {
+    አስተዋውቅ ውጤት = ምሳሌ(1)  # Missing second argument
+} ያዝ {
+    ማተም "Function argument mismatch error caught!"
+}
+
+ማተም "\n=== All error message tests completed! ==="
