@@ -1,4 +1,20 @@
-# Add your project dependencies here
-# Example:
-# requests>=2.25.0
-# numpy>=1.20.0
+# Ge-ez (ግእዝ) Amharic Programming Language Dependencies
+
+# Core dependencies
+# No external dependencies required - pure Python implementation
+
+# Development dependencies (for testing and CI/CD)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+black>=22.0.0
+isort>=5.0.0
+flake8>=5.0.0
+mypy>=1.0.0
+
+# Documentation dependencies
+mkdocs>=1.4.0
+mkdocs-material>=9.0.0
+
+# Build dependencies
+build>=0.8.0
+twine>=4.0.0
