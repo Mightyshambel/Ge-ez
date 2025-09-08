@@ -181,6 +181,23 @@ class BuiltinFunctionNode(ASTNode):
         return f"BuiltinFunction({self.function}, {self.args})"
 
 
+class TryCatchNode(ASTNode):
+    def __init__(self, try_block: List[ASTNode], catch_blocks: List[tuple] = None, finally_block: Optional[List[ASTNode]] = None):
+        self.try_block = try_block
+        self.catch_blocks = catch_blocks or []  # List of (exception_type, variable_name, block) tuples
+        self.finally_block = finally_block
+    
+    def __repr__(self):
+        return f"TryCatch(try:{self.try_block}, catch:{self.catch_blocks}, finally:{self.finally_block})"
+
+
+class ThrowNode(ASTNode):
+    def __init__(self, expression: ASTNode):
+        self.expression = expression
+    
+    def __repr__(self):
+        return f"Throw({self.expression})"
+
 
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
@@ -216,6 +233,10 @@ class GeEzParser:
             return self.parse_function_declaration()
         elif self.match('RETURN'):
             return self.parse_return_statement()
+        elif self.match('TRY'):
+            return self.parse_try_catch_statement()
+        elif self.match('THROW'):
+            return self.parse_throw_statement()
         elif self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR'):
             # Check if this is a function call or assignment
             if self.check('LPAREN'):
@@ -599,3 +620,58 @@ class GeEzParser:
                 return self.advance()
         
         raise SyntaxError(f"{message} at line {self.peek().line}, column {self.peek().column}")
+    
+    def parse_try_catch_statement(self) -> ASTNode:
+        """Parse try-catch-finally statement: ሞክር { statements } ያዝ exception_type variable { statements } በመጨረሻ { statements }"""
+        # Parse try block
+        try_block = []
+        if self.match('LBRACE'):
+            while not self.match('RBRACE') and not self.is_at_end():
+                stmt = self.parse_statement()
+                if stmt:
+                    try_block.append(stmt)
+        
+        # Parse catch blocks
+        catch_blocks = []
+        while self.match('CATCH'):
+            # Parse exception type and variable name
+            exception_type = None
+            variable_name = None
+            
+            # Check if there are parentheses (optional)
+            if self.match('LPAREN'):
+                if not self.match('RPAREN'):
+                    exception_type = self.consume('IDENTIFIER', 'AMHARIC_ID', 'STRING', message='Expected exception type').value
+                    if self.match('COMMA'):
+                        variable_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected variable name').value
+                    self.consume('RPAREN', 'Expected )')
+                else:
+                    # Empty parentheses - no exception type or variable
+                    pass
+            
+            # Parse catch block
+            catch_block = []
+            if self.match('LBRACE'):
+                while not self.match('RBRACE') and not self.is_at_end():
+                    stmt = self.parse_statement()
+                    if stmt:
+                        catch_block.append(stmt)
+            
+            catch_blocks.append((exception_type, variable_name, catch_block))
+        
+        # Parse finally block
+        finally_block = None
+        if self.match('FINALLY'):
+            finally_block = []
+            if self.match('LBRACE'):
+                while not self.match('RBRACE') and not self.is_at_end():
+                    stmt = self.parse_statement()
+                    if stmt:
+                        finally_block.append(stmt)
+        
+        return TryCatchNode(try_block, catch_blocks, finally_block)
+    
+    def parse_throw_statement(self) -> ASTNode:
+        """Parse throw statement: አስተላልፍ expression"""
+        expression = self.parse_expression()
+        return ThrowNode(expression)

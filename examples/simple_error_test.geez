@@ -1,0 +1,18 @@
+# Simple Error Handling Test
+ማተም "Testing error handling..."
+
+# Basic try-catch
+ሞክር {
+    አስተዋውቅ ቁጥር = 10 / 0
+} ያዝ ("Exception", ስህተት) {
+    ማተም "Error caught: " + ስህተት
+}
+
+# Throw test
+ሞክር {
+    አስተላልፍ "Custom error message"
+} ያዝ ("Exception", ስህተት) {
+    ማተም "Thrown error caught: " + ስህተት
+}
+
+ማተም "Error handling working!"

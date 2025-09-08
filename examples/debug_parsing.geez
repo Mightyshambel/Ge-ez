@@ -1,0 +1,7 @@
+# Debug parsing
+ሞክር {
+    ማተም "In try block"
+    አስተላልፍ "Test error"
+} ያዝ {
+    ማተም "In catch block"
+}

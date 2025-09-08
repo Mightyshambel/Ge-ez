@@ -1,0 +1,59 @@
+# Error Handling Test - ግእዝ
+# Testing try-catch-finally and throw statements
+
+ማተም "=== Testing Basic Try-Catch ==="
+
+# Test 1: Basic try-catch
+ሞክር {
+    አስተዋውቅ ቁጥር = 10
+    አስተዋውቅ ውጤት = ቁጥር / 0  # This will cause an error
+    ማተም "This won't be printed"
+} ያዝ {
+    ማተም "Error caught!"
+}
+
+ማተም "Continuing after try-catch..."
+
+# Test 2: Try with multiple catch blocks
+ሞክር {
+    አስተዋውቅ ዝርዝር = [1, 2, 3]
+    አስተዋውቅ አካል = ዝርዝር[10]  # Index out of range
+} ያዝ {
+    ማተም "Index error caught!"
+} ያዝ {
+    ማተም "General error caught!"
+}
+
+# Test 3: Try-catch-finally
+ሞክር {
+    አስተዋውቅ ቁጥር = 5
+    ማተም "In try block: " + ቁጥር
+    አስተዋውቅ ውጤት = ቁጥር / 0
+} ያዝ {
+    ማተም "Error in catch!"
+} በመጨረሻ {
+    ማተም "Finally block executed"
+}
+
+# Test 4: Throw statement
+ሞክር {
+    አስተዋውቅ አድሜ = 15
+    ከሆነ አድሜ < 18 {
+        አስተላልፍ "Underage access denied"
+    }
+    ማተም "Access granted"
+} ያዝ {
+    ማተም "Custom error caught!"
+}
+
+# Test 5: Successful try block
+ሞክር {
+    አስተዋውቅ ቁጥር1 = 10
+    አስተዋውቅ ቁጥር2 = 5
+    አስተዋውቅ ውጤት = ቁጥር1 + ቁጥር2
+    ማተም "Success: " + ቁጥር1 + " + " + ቁጥር2 + " = " + ውጤት
+} ያዝ {
+    ማተም "This won't be executed"
+}
+
+ማተም "\n=== All error handling tests completed! ==="

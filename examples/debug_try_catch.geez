@@ -1,0 +1,6 @@
+# Debug try-catch parsing
+ሞክር {
+    ማተም "In try block"
+} ያዝ ("Exception", ስህተት) {
+    ማተም "In catch block"
+}

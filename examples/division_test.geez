@@ -1,0 +1,7 @@
+# Test division by zero
+ሞክር {
+    አስተዋውቅ ቁጥር = 10
+    አስተዋውቅ ውጤት = ቁጥር / 0
+} ያዝ ("RuntimeError", ስህተት) {
+    ማተም "Division by zero caught: " + ስህተት
+}

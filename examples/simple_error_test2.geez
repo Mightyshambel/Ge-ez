@@ -1,0 +1,18 @@
+# Simple Error Handling Test - No Division
+ማተም "Testing error handling..."
+
+# Test with throw statement
+ሞክር {
+    አስተላልፍ "Custom error message"
+} ያዝ ("Exception", ስህተት) {
+    ማተም "Thrown error caught: " + ስህተት
+}
+
+# Test with undefined variable
+ሞክር {
+    አስተዋውቅ ውጤት = ያልተገኘ_ተለዋዋጭ
+} ያዝ ("Exception", ስህተት) {
+    ማተም "Undefined variable error caught: " + ስህተት
+}
+
+ማተም "Error handling working!"

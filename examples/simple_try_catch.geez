@@ -1,0 +1,6 @@
+# Very simple try-catch test
+ሞክር {
+    ማተም "In try"
+} ያዝ {
+    ማተም "In catch"
+}

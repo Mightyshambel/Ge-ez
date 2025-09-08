@@ -49,6 +49,10 @@ class GeEzLexer:
         'ወደላይ': 'UPPER',        # upper
         'ወደታች': 'LOWER',        # lower
         'ተክ': 'REPLACE',         # replace
+        'ሞክር': 'TRY',            # try
+        'ያዝ': 'CATCH',           # catch
+        'በመጨረሻ': 'FINALLY',      # finally
+        'አስተላልፍ': 'THROW',       # throw
     }
     
     # Token patterns

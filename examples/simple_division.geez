@@ -1,0 +1,6 @@
+# Test simple division by zero
+ሞክር {
+    አስተዋውቅ ቁጥር = 10 / 0
+} ያዝ {
+    ማተም "Caught division by zero!"
+}

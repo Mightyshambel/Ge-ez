@@ -8,7 +8,7 @@ from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
     FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
-    StringMethodNode, BuiltinFunctionNode
+    StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode
 )
 
 
@@ -18,11 +18,12 @@ class GeEzInterpreter:
     def __init__(self):
         self.variables: Dict[str, Any] = {}
         self.functions: Dict[str, FunctionNode] = {}
+        self.in_try_catch = False  # Flag to track if we're in try-catch context
     
     def interpret(self, code: str) -> Any:
         """Interpret Ge-ez code"""
         from .lexer import GeEzLexer
-        from .parser import GeEzParser
+        from .parser import GeEzParser, TryCatchNode
         
         try:
             # Tokenize
@@ -36,12 +37,21 @@ class GeEzInterpreter:
             # Execute
             result = None
             for statement in ast:
-                result = self.execute(statement)
+                # Special handling for try-catch statements
+                if isinstance(statement, TryCatchNode):
+                    result = self.execute_try_catch(statement)
+                else:
+                    result = self.execute(statement)
             
             return result
             
         except Exception as e:
-            print(f"ስህተት: {e}")
+            # Only catch exceptions if we're not in a try-catch context
+            if not self.in_try_catch:
+                print(f"ስህተት: {e}")
+            else:
+                # Re-raise the exception so it can be caught by try-catch blocks
+                raise e
             return None
     
     def execute(self, node: ASTNode) -> Any:
@@ -72,6 +82,12 @@ class GeEzInterpreter:
         
         elif isinstance(node, BuiltinFunctionNode):
             return self.execute_builtin_function(node)
+        
+        elif isinstance(node, TryCatchNode):
+            return self.execute_try_catch(node)
+        
+        elif isinstance(node, ThrowNode):
+            return self.execute_throw(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -431,6 +447,58 @@ class GeEzInterpreter:
         
         else:
             raise ValueError(f"Unknown built-in function: {node.function}")
+
+    def execute_try_catch(self, node: TryCatchNode) -> Any:
+        """Execute try-catch-finally block"""
+        # Set flag to indicate we're in try-catch context
+        old_flag = self.in_try_catch
+        self.in_try_catch = True
+        
+        try:
+            # Execute try block
+            for statement in node.try_block:
+                self.execute(statement)
+        except Exception as e:
+            # Find matching catch block
+            caught = False
+            for exception_type, variable_name, catch_block in node.catch_blocks:
+                # Catch all exceptions if no specific type is specified, or if it matches
+                # Remove quotes from exception_type if it's a string literal
+                clean_exception_type = exception_type
+                if isinstance(exception_type, str) and exception_type.startswith('"') and exception_type.endswith('"'):
+                    clean_exception_type = exception_type[1:-1]
+                
+                if (exception_type is None or 
+                    clean_exception_type == "Exception" or 
+                    clean_exception_type == "RuntimeError" or
+                    clean_exception_type == str(type(e).__name__)):
+                    # Store exception in variable if specified
+                    if variable_name:
+                        self.variables[variable_name] = str(e)
+                    
+                    # Execute catch block
+                    for statement in catch_block:
+                        self.execute(statement)
+                    caught = True
+                    break
+            
+            # If no catch block matched, re-raise the exception
+            if not caught:
+                raise e
+        
+        finally:
+            # Execute finally block if present
+            if node.finally_block:
+                for statement in node.finally_block:
+                    self.execute(statement)
+            
+            # Restore the flag
+            self.in_try_catch = old_flag
+    
+    def execute_throw(self, node: ThrowNode) -> Any:
+        """Execute throw statement"""
+        exception_value = self.execute(node.expression)
+        raise Exception(str(exception_value))
 
 
 class ReturnException(Exception):

@@ -1,0 +1,8 @@
+# Test with throw to trigger catch
+ሞክር {
+    ማተም "Before throw"
+    አስተላልፍ "Test error"
+    ማተም "After throw - won't print"
+} ያዝ {
+    ማተም "Caught the error!"
+}
