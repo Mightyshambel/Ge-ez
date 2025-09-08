@@ -1,0 +1,36 @@
+# Vercel ignore file
+# Exclude development and build files
+
+# Python files
+*.py
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/
+
+# Development files
+tests/
+docs/
+examples/
+.github/
+.git/
+.gitignore
+
+# Dependencies
+node_modules/
+requirements.txt
+requirements-dev.txt
+setup.py
+MANIFEST.in
+
+# CI/CD
+.github/
+
+# Other
+*.md
+!README.md
+deploy.py
+mkdocs.yml
+DEPLOYMENT_STATUS.md
+PYTHON_COMPARISON.md
