@@ -1,299 +1,84 @@
 # Ge-ez (ግእዝ) - Amharic Programming Language
 
-A programming language that allows you to write code using Amharic keywords and syntax, making programming more accessible to Amharic speakers.
+## 🌟 Welcome to Ge-ez!
 
-## 🎯 Project Goals
+**Ge-ez** (ግእዝ) is the world's first complete Amharic programming language, bringing the beauty and richness of the Amharic language to the world of programming.
 
-This project aims to:
-- Make programming more accessible to Amharic speakers
-- Preserve and promote the Amharic language in technology
-- Create an educational tool for learning programming concepts
-- Demonstrate how to build a programming language interpreter
+### 🚀 Quick Start
 
-## 🚀 Features
-
-- **Amharic Keywords**: Use familiar Amharic words for programming concepts
-- **Variable Declarations**: Declare variables with `አስተዋውቅ` (declare)
-- **Control Flow**: Use `ከሆነ` (if), `አለበለዚያ` (else), `በመሆኑ` (while)
-- **Output**: Print with `ማተም` (print)
-- **Data Types**: Numbers, strings, and booleans (`እውነት`/`ሐሰት`)
-- **Operators**: Arithmetic (`+`, `-`, `*`, `/`) and logical (`እና`, `ወይም`, `አይደለም`)
-- **Comments**: Support for `#` comments
-
-## 📚 Amharic Script Reference
-
-For non-Amharic speakers, here's a comprehensive guide to the Amharic alphabet (Ge'ez script) used in this programming language:
-
-<img src="amharic-alphabet.png" alt="Amharic Alphabet Chart" width="1191" height="1685">
-
-*This chart shows the Amharic syllabic characters (fidel), numerals, and punctuation marks with their Latin transliterations.*
-
-### Understanding Amharic Characters in Code
-
-The Amharic script is **syllabic** - each character represents a consonant + vowel combination. For example:
-- **ሀ** (Ha), **ሁ** (Hu), **ሂ** (Hi), **ሃ** (Haa), **ሄ** (Hee), **ህ** (He), **ሆ** (Ho)
-- **ለ** (La), **ሉ** (Lu), **ሊ** (Li), **ላ** (Laa), **ሌ** (Lee), **ል** (Le), **ሎ** (Lo)
-
-## 📚 Amharic Keywords Reference
-
-| Amharic | English | Meaning | Example |
-|---------|---------|---------|---------|
-| አስተዋውቅ | VAR | declare/let | `አስተዋውቅ ስም = "ግእዝ"` |
-| ከሆነ | IF | if | `ከሆነ አድሜ > 18` |
-| አለበለዚያ | ELSE | else | `አለበለዚያ { ማተም "ልጅ" }` |
-| በመሆኑ | WHILE | while | `በመሆኑ ቆጠራ < 5` |
-| ለ | FOR | for | `ለ i በ 5 { ማተም i }` |
-| በ | IN | in | `ለ i በ 5` |
-| ማተም | PRINT | print | `ማተም "ሰላም"` |
-| ተግባር | FUNCTION | function | `ተግባር ስም() { ... }` |
-| ተመለስ | RETURN | return | `ተመለስ ውጤት` |
-| እውነት | TRUE | true | `አስተዋውቅ እውነት_ነው = እውነት` |
-| ሐሰት | FALSE | false | `አስተዋውቅ ሐሰት_ነው = ሐሰት` |
-| እና | AND | and | `ሀ > 0 እና ሀ < 10` |
-| ወይም | OR | or | `ሀ == 0 ወይም ሀ == 1` |
-| ግብአት | INPUT | input | `ግብአት("ስም: ")` |
-| ውጣ | EXIT | exit | `ውጣ` (in interactive mode) |
-
-### Built-in Functions
-| Amharic | English | Meaning | Example |
-|---------|---------|---------|----------|
-| ወሰን | RANGE | range | `ወሰን(5)` |
-| ዓይነት | TYPE | type | `ዓይነት(ቁጥር)` |
-| ቁጥር | INT | int | `ቁጥር("123")` |
-| ጽሑፍ | STR | str | `ጽሑፍ(123)` |
-| ከፍተኛ | MAX | max | `ከፍተኛ(1, 5, 3)` |
-| ዠቅተኛ | MIN | min | `ዠቅተኛ(1, 5, 3)` |
-
-## 🛠️ Installation & Setup
-
-### Prerequisites
-- Python 3.7 or higher
-- Git (for cloning the repository)
-
-### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/Mightyshambel/Ge-ez.git
-cd Ge-ez
+# Install Ge-ez
+pip install geez-lang
+
+# Run your first Amharic program
+geez examples/hello_world.geez
 ```
 
-### Step 2: Create Virtual Environment
-```bash
-python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
+### 📚 Documentation
 
-### Step 3: Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+- **[Getting Started](docs/getting-started.md)** - Your first steps with Ge-ez
+- **[Language Reference](docs/language-reference.md)** - Complete syntax and features
+- **[Examples](examples/)** - Learn by example
+- **[API Documentation](docs/api.md)** - Detailed API reference
+- **[Installation Guide](docs/installation.md)** - Installation instructions
 
-### Step 4: Run the Language
-```bash
-python main.py
-```
+### 🎯 Features
 
-## 📖 Usage Examples
+- ✅ **Complete Amharic Syntax** - Write code in Amharic
+- ✅ **Variables & Data Types** - Numbers, strings, booleans, lists, dictionaries
+- ✅ **Control Flow** - If/else, loops, functions
+- ✅ **Object-Oriented Programming** - Classes, methods, inheritance
+- ✅ **Error Handling** - Try/catch blocks with Amharic error messages
+- ✅ **File I/O Operations** - Read, write, and manage files
+- ✅ **Built-in Functions** - Rich set of utility functions
+- ✅ **Performance Optimized** - Fast execution with caching
 
-### Hello World
+### 💡 Example: Hello World
+
 ```amharic
-# አማርኛ ፕሮግራም - ሰላም ዓለም
-አስተዋውቅ ስም = "ግእዝ"
-ማተም "ሰላም! ስሜ " + ስም + " ነው።"
+ማተም "ሰላም ዓለም!"
 ```
 
-### Math Operations
-```amharic
-# ሒሳብ ምሳሌ
-አስተዋውቅ ሀ = 10
-አስተዋውቅ ለ = 5
-ማተም "ሀ + ለ = " + (ሀ + ለ)
-ማተም "ሀ - ለ = " + (ሀ - ለ)
-ማተም "ሀ * ለ = " + (ሀ * ለ)
-ማተም "ሀ / ለ = " + (ሀ / ለ)
-```
+### 💡 Example: Classes & Objects
 
-### Conditional Statements
 ```amharic
-# ሁኔታዊ መግለጫዎች
-አስተዋውቅ አድሜ = 25
-ከሆነ አድሜ > 18 {
-    ማተም "አዋቂ ነኝ!"
-} ማተምበለዚያ {
-    ማተም "ልጅ ነኝ!"
+ክፍል ሰው {
+    ዘዴ መጀመሪያ(ራሱ, ስም, አድሜ) {
+        ራሱ.ስም = ስም
+        ራሱ.አድሜ = አድሜ
+    }
+    
+    ዘዴ ማተም_መረጃ(ራሱ) {
+        ማተም "ስም:", ራሱ.ስም
+        ማተም "አድሜ:", ራሱ.አድሜ
+    }
 }
+
+አስተዋውቅ ሰው_1 = አዲስ ሰው("አሊ", 25)
+ሰው_1.ማተም_መረጃ()
 ```
 
-### Loops
-```amharic
-# ሉፕ ምሳሌ
-አስተዋውቅ ቆጠራ = 1
-በመሆኑ ቆጠራ <= 5 {
-    ማተም "ቆጠራ: " + ቆጠራ
-    ቆጠራ = ቆጠራ + 1
-}
-```
+### 🌍 Why Ge-ez?
 
-### Comments
-```amharic
-# Single-line comment
-አስተዋውቅ ስም = "ግእዝ"  # Inline comment
+- **Cultural Preservation** - Keep Amharic language alive in technology
+- **Educational Tool** - Learn programming concepts in your native language
+- **Accessibility** - Make programming accessible to Amharic speakers
+- **Innovation** - First complete programming language in Amharic
 
-/* Multi-line comment
-   This can span multiple lines
-   and contains various content */
-አስተዋውቅ አድሜ = 25
-ማተም አድሜ
-```
+### 🤝 Contributing
 
-### Lists and Arrays
-```amharic
-# ዝርዝሮች እና ድርድሮች
-አስተዋውቅ ቁጥሮች = [1, 2, 3, 4, 5]
-አስተዋውቅ ስሞች = ["አሊ", "ብሩክ", "ሰላም"]
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details.
 
-ማተም ቁጥሮች[0]  # Output: 1
-ማተም ስሞች[1]   # Output: ብሩክ
+### 📄 License
 
-# ድብልቅ ዝርዝር
-አስተዋውቅ ድብልቅ = [1, "ሰላም", እውነት, 3.14]
-ማተም ድብልቅ
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### User Input
-```amharic
-# የተገልጋይ ግብዓት
-አስተዋውቅ ስም = ግብአት("ስምህን አስገባ: ")
-አስተዋውቅ አድሜ = ግብአት("አድሜህን አስገባ: ")
+### 🙏 Acknowledgments
 
-ማተም "ሰላም " + ስም + "! አድሜህ " + አድሜ + " ነው"
-
-# ግብአት ከዝርዝሮች ጋር
-አስተዋውቅ መረጃ = [ስም, አድሜ]
-ማተም መረጃ
-```
-
-## 🎮 Interactive Mode
-
-Run the language in interactive mode for experimentation:
-
-```bash
-python main.py -i
-```
-
-Example session:
-```
-Ge-ez Interactive Mode (ተገልጋይ ሁነት)
-Type 'ውጣ' to exit
-ግእዝ> ማተም "ሰላም አማርኛ!"
-ሰላም አማርኛ!
-ግእዝ> አስተዋውቅ ቁጥር = 42
-ግእዝ> ማተም ቁጥር
-42
-ግእዝ> ውጣ
-```
-
-## 🏗️ Project Architecture
-
-```
-Ge-ez/
-├── geez/                 # Main package
-│   ├── __init__.py      # Package initialization
-│   ├── lexer.py         # Tokenizer for Amharic syntax
-│   ├── parser.py        # Parser for AST generation
-│   ├── interpreter.py   # AST interpreter
-│   └── cli.py           # Command-line interface
-├── examples/            # Example Amharic programs
-│   ├── hello.geez       # Hello world example
-│   ├── math.geez        # Math operations example
-│   ├── loop.geez        # Loop example
-│   └── simple.geez      # Simple variable example
-├── main.py              # Main entry point
-├── requirements.txt     # Python dependencies
-├── .gitignore          # Git ignore rules
-└── README.md           # This file
-```
-
-## 🔧 Development
-
-### Running Tests
-```bash
-# Run example programs
-python main.py examples/hello.geez
-python main.py examples/math.geez
-python main.py examples/loop.geez
-```
-
-### Adding New Features
-1. **New Keywords**: Add to `KEYWORDS` in `geez/lexer.py`
-2. **New Operators**: Add patterns to `TOKEN_PATTERNS` in `geez/lexer.py`
-3. **New Statements**: Extend parser in `geez/parser.py`
-4. **New Execution**: Add to interpreter in `geez/interpreter.py`
-
-### Code Structure
-- **Lexer**: Converts Amharic text into tokens
-- **Parser**: Builds Abstract Syntax Tree (AST) from tokens
-- **Interpreter**: Executes the AST and manages variables
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit your changes**: `git commit -m 'Add amazing feature'`
-4. **Push to the branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request**
-
-### Areas for Contribution
-- Add more Amharic keywords
-- Implement additional language features (functions, arrays, etc.)
-- Improve error messages in Amharic
-- Create more example programs
-- Add unit tests
-- Improve documentation
-- Add syntax highlighting for editors
-
-## 📝 Language Specification
-
-### Data Types
-- **Numbers**: `42`, `3.14`
-- **Strings**: `"ሰላም"`, `"Hello"`
-- **Booleans**: `እውነት`, `ሐሰት`
-- **Lists**: `[1, 2, 3]`, `["ሰላም", "ዓለም"]`
-
-### Operators
-- **Arithmetic**: `+`, `-`, `*`, `/`
-- **Comparison**: `==`, `!=`, `<`, `>`, `<=`, `>=`
-- **Logical**: `እና`, `ወይም`, `አይደለም`
-
-### Statements
-- **Variable Declaration**: `አስተዋውቅ identifier = expression`
-- **Print**: `ማተም expression`
-- **Conditional**: `ከሆነ condition { statements } ማተምበለዚያ { statements }`
-- **Loop**: `በመሆኑ condition { statements }`
-
-## 🐛 Known Issues
-
-- Interactive mode has some input handling issues
-- Limited error messages in Amharic
-- No support for functions yet
-- No array/list data type
-
-## 📄 License
-
-This project is for educational purposes. Feel free to use and modify as needed.
-
-## 🙏 Acknowledgments
-
-- Inspired by the beauty and richness of the Amharic language
-- Built with Python's simplicity and power
-- Thanks to the open-source community for inspiration
-
-## 📞 Contact
-
-- **GitHub**: [@Mightyshambel](https://github.com/Mightyshambel)
-- **Repository**: [https://github.com/Mightyshambel/Ge-ez](https://github.com/Mightyshambel/Ge-ez)
+- Ethiopian programming community
+- Amharic language experts
+- Open source contributors
 
 ---
 
-**Made by Mighty Shambel for the Amharic-speaking community**
+**Made with ❤️ for the Amharic-speaking programming community**

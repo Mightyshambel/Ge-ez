@@ -1,340 +1,251 @@
 # Installation Guide
 
-This guide will help you install and set up the Ge-ez Amharic Programming Language on your system.
+This guide will help you install Ge-ez (ግእዝ) on your system.
 
-## System Requirements
+## 🚀 Quick Installation
 
-- **Operating System**: Windows, macOS, or Linux
-- **Python**: Version 3.7 or higher
-- **Memory**: At least 100MB free space
-- **Internet**: Required for downloading dependencies
+### From PyPI (Recommended)
+```bash
+pip install geez-lang
+```
 
-## Installation Methods
-
-### Method 1: Direct Installation (Recommended)
-
-#### Step 1: Download the Repository
+### From Source
 ```bash
 git clone https://github.com/Mightyshambel/Ge-ez.git
 cd Ge-ez
-```
-
-#### Step 2: Create Virtual Environment
-```bash
-# Create virtual environment
-python3 -m venv .venv
-
-# Activate virtual environment
-# On Windows:
-.venv\Scripts\activate
-# On macOS/Linux:
-source .venv/bin/activate
-```
-
-#### Step 3: Install Dependencies
-```bash
 pip install -r requirements.txt
-```
-
-#### Step 4: Verify Installation
-```bash
-python main.py --help
-```
-
-### Method 2: Development Installation
-
-If you plan to contribute to the project:
-
-#### Step 1: Fork and Clone
-```bash
-# Fork the repository on GitHub first
-git clone https://github.com/YOUR_USERNAME/Ge-ez.git
-cd Ge-ez
-```
-
-#### Step 2: Set Up Development Environment
-```bash
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install in development mode
 pip install -e .
 ```
 
-#### Step 3: Install Development Dependencies
+## 📋 Prerequisites
+
+- **Python 3.7+** (Python 3.8+ recommended)
+- **pip** (Python package installer)
+- **Git** (for source installation)
+
+### Check Python Version
 ```bash
-pip install pytest black flake8 mypy
+python3 --version
+# or
+python --version
 ```
 
-## Platform-Specific Instructions
+### Check pip Installation
+```bash
+pip --version
+# or
+pip3 --version
+```
+
+## 🖥️ Platform-Specific Instructions
 
 ### Windows
 
-#### Using Command Prompt
+#### Option 1: Using pip
+```cmd
+pip install geez-lang
+```
+
+#### Option 2: From Source
 ```cmd
 git clone https://github.com/Mightyshambel/Ge-ez.git
 cd Ge-ez
-python -m venv .venv
-.venv\Scripts\activate
 pip install -r requirements.txt
-python main.py --help
-```
-
-#### Using PowerShell
-```powershell
-git clone https://github.com/Mightyshambel/Ge-ez.git
-cd Ge-ez
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python main.py --help
+pip install -e .
 ```
 
 ### macOS
 
+#### Using Homebrew (Recommended)
 ```bash
-# Install Git if not already installed
-brew install git
+# Install Python if not already installed
+brew install python
 
-# Clone and setup
+# Install Ge-ez
+pip3 install geez-lang
+```
+
+#### From Source
+```bash
 git clone https://github.com/Mightyshambel/Ge-ez.git
 cd Ge-ez
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python main.py --help
+pip3 install -r requirements.txt
+pip3 install -e .
 ```
 
 ### Linux (Ubuntu/Debian)
 
+#### Using apt
 ```bash
-# Install Git and Python if not already installed
+# Install Python and pip
 sudo apt update
-sudo apt install git python3 python3-pip python3-venv
+sudo apt install python3 python3-pip
 
-# Clone and setup
+# Install Ge-ez
+pip3 install geez-lang
+```
+
+#### From Source
+```bash
+# Install dependencies
+sudo apt install git python3 python3-pip
+
+# Clone and install
 git clone https://github.com/Mightyshambel/Ge-ez.git
 cd Ge-ez
-python3 -m venv .venv
-source .venv/bin/activate
+pip3 install -r requirements.txt
+pip3 install -e .
+```
+
+### Linux (CentOS/RHEL/Fedora)
+
+#### Using yum/dnf
+```bash
+# Install Python and pip
+sudo yum install python3 python3-pip
+# or for newer versions
+sudo dnf install python3 python3-pip
+
+# Install Ge-ez
+pip3 install geez-lang
+```
+
+## 🔧 Development Installation
+
+If you want to contribute to Ge-ez or run it in development mode:
+
+```bash
+# Clone the repository
+git clone https://github.com/Mightyshambel/Ge-ez.git
+cd Ge-ez
+
+# Create a virtual environment (recommended)
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
-python main.py --help
+
+# Install in development mode
+pip install -e .
+
+# Install development dependencies
+pip install pytest pytest-cov black flake8 mypy
 ```
 
-## Troubleshooting
+## ✅ Verify Installation
 
-### Common Issues
+After installation, verify that Ge-ez is working correctly:
 
-#### Issue: "python: command not found"
-**Solution**: Install Python 3.7+ or use `python3` instead of `python`
-
-#### Issue: "git: command not found"
-**Solution**: Install Git from [git-scm.com](https://git-scm.com/)
-
-#### Issue: "pip: command not found"
-**Solution**: 
 ```bash
-# On Linux/macOS
-sudo apt install python3-pip  # Ubuntu/Debian
-brew install python3         # macOS
+# Check version
+geez --version
 
-# On Windows
-python -m ensurepip --upgrade
-```
+# Run a simple test
+geez --help
 
-#### Issue: Virtual Environment Activation Fails
-**Solution**: 
-```bash
-# Try different activation commands
-source .venv/bin/activate     # Linux/macOS
-.venv\Scripts\activate        # Windows CMD
-.venv\Scripts\Activate.ps1    # Windows PowerShell
-```
-
-#### Issue: Permission Denied
-**Solution**: 
-```bash
-# On Linux/macOS
-chmod +x .venv/bin/activate
-
-# On Windows, run as Administrator
-```
-
-### Python Version Issues
-
-#### Check Python Version
-```bash
-python --version
-# or
-python3 --version
-```
-
-#### Install Specific Python Version
-```bash
-# On Ubuntu/Debian
-sudo apt install python3.9
-
-# On macOS with Homebrew
-brew install python@3.9
-
-# On Windows, download from python.org
-```
-
-### Dependency Issues
-
-#### Clear Pip Cache
-```bash
-pip cache purge
-```
-
-#### Reinstall Dependencies
-```bash
-pip uninstall -r requirements.txt -y
-pip install -r requirements.txt
-```
-
-#### Use Specific Python Version
-```bash
-python3.9 -m venv .venv
-source .venv/bin/activate
-python3.9 -m pip install -r requirements.txt
-```
-
-## Testing Your Installation
-
-### Basic Test
-```bash
-python main.py examples/simple.geez
+# Test with a simple program
+echo 'ማተም "ሰላም ዓለም!"' > test.geez
+geez test.geez
 ```
 
 Expected output:
 ```
-Welcome to Ge-ez! (ግእዝ አማርኛ የፕሮግራሚንግ ቋንቋ)
-Amharic Programming Language
-========================================
-ግእዝ
+ሰላም ዓለም!
 ```
 
-### Interactive Mode Test
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. "geez: command not found"
+**Solution:** Make sure the installation directory is in your PATH, or use:
 ```bash
-python main.py -i
+python3 -m geez your_file.geez
 ```
 
-Then type:
-```
-ማተም "ሰላም አማርኛ!"
-ውጣ
-```
-
-### All Examples Test
+#### 2. "No module named 'geez'"
+**Solution:** Reinstall the package:
 ```bash
-python main.py examples/hello.geez
-python main.py examples/math.geez
-python main.py examples/loop.geez
+pip uninstall geez-lang
+pip install geez-lang
 ```
 
-## Uninstallation
-
-### Remove Virtual Environment
+#### 3. Permission Errors
+**Solution:** Use user installation:
 ```bash
-# Deactivate first
-deactivate
-
-# Remove directory
-rm -rf .venv
+pip install --user geez-lang
 ```
 
-### Remove Repository
+#### 4. Python Version Issues
+**Solution:** Make sure you're using Python 3.7+:
 ```bash
-cd ..
-rm -rf Ge-ez
+python3 --version
+# If version is too old, install a newer version
 ```
 
-## Getting Help
+### Unicode/Encoding Issues
 
-If you encounter issues:
+If you encounter Unicode issues with Amharic text:
 
-1. **Check the Issues**: [GitHub Issues](https://github.com/Mightyshambel/Ge-ez/issues)
-2. **Create an Issue**: Describe your problem with:
-   - Operating system
-   - Python version
-   - Error messages
-   - Steps to reproduce
+#### Windows
+```cmd
+chcp 65001
+set PYTHONIOENCODING=utf-8
+```
 
-3. **Community Support**: 
-   - GitHub Discussions
-   - Create a Pull Request with fixes
+#### Linux/macOS
+```bash
+export PYTHONIOENCODING=utf-8
+```
 
-## Next Steps
+## 🔄 Updating Ge-ez
+
+To update to the latest version:
+
+```bash
+pip install --upgrade geez-lang
+```
+
+## 🗑️ Uninstalling Ge-ez
+
+To remove Ge-ez from your system:
+
+```bash
+pip uninstall geez-lang
+```
+
+## 📦 Alternative Installation Methods
+
+### Using conda (Coming Soon)
+```bash
+conda install -c conda-forge geez-lang
+```
+
+### Using Docker (Coming Soon)
+```bash
+docker pull mightyshambel/geez:latest
+docker run -it mightyshambel/geez:latest
+```
+
+## 🆘 Getting Help
+
+If you encounter any issues during installation:
+
+1. **Check the [Issues](https://github.com/Mightyshambel/Ge-ez/issues)** page on GitHub
+2. **Create a new issue** with details about your problem
+3. **Join our community** discussions
+4. **Check the documentation** for troubleshooting tips
+
+## 🎉 Next Steps
 
 After successful installation:
 
-1. **Read the Documentation**: [README.md](README.md)
-2. **Try Examples**: Run the example programs
-3. **Learn the Language**: Study Amharic keywords
-4. **Create Programs**: Write your own Amharic programs
-5. **Contribute**: Help improve the language
-
-## Development Setup
-
-For contributors:
-
-### Install Development Tools
-```bash
-pip install pytest black flake8 mypy
-```
-
-### Run Tests
-```bash
-pytest tests/
-```
-
-### Code Formatting
-```bash
-black geez/
-flake8 geez/
-mypy geez/
-```
-
-### Pre-commit Hooks
-```bash
-pip install pre-commit
-pre-commit install
-```
-
-## Docker Installation (Advanced)
-
-### Create Dockerfile
-```dockerfile
-FROM python:3.9-slim
-
-WORKDIR /app
-COPY . .
-RUN pip install -r requirements.txt
-
-CMD ["python", "main.py"]
-```
-
-### Build and Run
-```bash
-docker build -t ge-ez .
-docker run -it ge-ez
-```
-
-## Package Installation (Future)
-
-When the package is published to PyPI:
-
-```bash
-pip install ge-ez
-```
-
-Then use:
-```bash
-ge-ez examples/hello.geez
-```
+1. **Read the [Getting Started](getting-started.md)** guide
+2. **Try the [Examples](examples/)** 
+3. **Explore the [Language Reference](language-reference.md)**
+4. **Join the community** and start coding in Amharic!
 
 ---
 
-**Need help?** Open an issue on [GitHub](https://github.com/Mightyshambel/Ge-ez/issues)!
+**Welcome to the world of Amharic programming! 🇪🇹**
