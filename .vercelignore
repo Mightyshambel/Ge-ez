@@ -10,10 +10,8 @@ dist/
 build/
 
 # Development files
-tests/
 docs/
 examples/
-.github/
 .git/
 .gitignore
 
@@ -23,9 +21,6 @@ requirements.txt
 requirements-dev.txt
 setup.py
 MANIFEST.in
-
-# CI/CD
-.github/
 
 # Other
 *.md
