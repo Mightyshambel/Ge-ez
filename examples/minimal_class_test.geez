@@ -1,0 +1,6 @@
+# Simple class test - minimal
+ክፍል ሰው {
+    ዘዴ መጀመሪያ(ራሱ) {
+        ማተም "Hello"
+    }
+}

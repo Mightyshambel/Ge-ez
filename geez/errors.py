@@ -58,6 +58,12 @@ class AmharicErrorMessages:
         'type_error_dict_operation': "ንብብ አይነት እንደ ንብብ መጠቀም አለበት፣ {type} አይደለም",
         'add_requires_value': "ጨምር_ወደ ክዋኔ እሴት ያስፈልገዋል",
         'unknown_dict_operation': "ያልታወቀ የንብብ ክዋኔ: {operation}",
+        'undefined_class': "ያልተገለጸ ክፍል: '{class_name}'",
+        'type_error_property_access': "ንብብ አይነት እንደ ንብብ መጠቀም አለበት፣ {type} አይደለም",
+        'property_not_found': "ባህሪ '{property}' አልተገኘም",
+        'type_error_method_call': "ንብብ አይነት እንደ ንብብ መጠቀም አለበት፣ {type} አይደለም",
+        'invalid_object': "የማይቻል ነገር: {object}",
+        'method_not_found': "ዘዴ '{method}' በክፍል '{class_name}' ውስጥ አልተገኘም",
     }
     
     # Context-aware suggestions

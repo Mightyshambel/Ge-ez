@@ -238,6 +238,75 @@ class DictOperationNode(ASTNode):
         return f"DictOperation({self.operation}, {self.dict_expr}, {self.key_expr}, {self.value_expr})"
 
 
+class ClassNode(ASTNode):
+    def __init__(self, name: str, methods: List[ASTNode], properties: List[ASTNode] = None, parent_class: Optional[str] = None):
+        self.name = name
+        self.methods = methods
+        self.properties = properties or []
+        self.parent_class = parent_class
+    
+    def __repr__(self):
+        return f"Class({self.name}, methods:{len(self.methods)}, parent:{self.parent_class})"
+
+
+class MethodNode(ASTNode):
+    def __init__(self, name: str, parameters: List[str], body: List[ASTNode], is_constructor: bool = False):
+        self.name = name
+        self.parameters = parameters
+        self.body = body
+        self.is_constructor = is_constructor
+    
+    def __repr__(self):
+        return f"Method({self.name}, params:{self.parameters}, constructor:{self.is_constructor})"
+
+
+class PropertyNode(ASTNode):
+    def __init__(self, name: str, initial_value: Optional[ASTNode] = None):
+        self.name = name
+        self.initial_value = initial_value
+    
+    def __repr__(self):
+        return f"Property({self.name}, initial:{self.initial_value})"
+
+
+class NewNode(ASTNode):
+    def __init__(self, class_name: str, arguments: List[ASTNode]):
+        self.class_name = class_name
+        self.arguments = arguments
+    
+    def __repr__(self):
+        return f"New({self.class_name}, args:{len(self.arguments)})"
+
+
+class AccessNode(ASTNode):
+    def __init__(self, object_expr: ASTNode, property_name: str):
+        self.object_expr = object_expr
+        self.property_name = property_name
+    
+    def __repr__(self):
+        return f"Access({self.object_expr}.{self.property_name})"
+
+
+class CallMethodNode(ASTNode):
+    def __init__(self, object_expr: ASTNode, method_name: str, arguments: List[ASTNode]):
+        self.object_expr = object_expr
+        self.method_name = method_name
+        self.arguments = arguments
+    
+    def __repr__(self):
+        return f"CallMethod({self.object_expr}.{self.method_name}, args:{len(self.arguments)})"
+
+
+class PropertyAssignmentNode(ASTNode):
+    def __init__(self, object_expr: ASTNode, property_name: str, value_expr: ASTNode):
+        self.object_expr = object_expr
+        self.property_name = property_name
+        self.value_expr = value_expr
+    
+    def __repr__(self):
+        return f"PropertyAssignment({self.object_expr}.{self.property_name} = {self.value_expr})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -276,12 +345,18 @@ class GeEzParser:
             return self.parse_try_catch_statement()
         elif self.match('THROW'):
             return self.parse_throw_statement()
-        elif self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR'):
+        elif self.match('CLASS'):
+            return self.parse_class_declaration()
+        elif self.check('IDENTIFIER') or self.check('AMHARIC_ID') or self.check('FOR') or self.check('SELF') or self.check('THIS'):
             # Check if this is a function call or assignment
-            if self.check('LPAREN'):
+            if self.check_next('LPAREN'):
                 return self.parse_function_call_statement()
-            else:
+            elif self.check_next('ASSIGN'):
                 return self.parse_assignment()
+            else:
+                # Parse as expression (could be property access or method call)
+                expr = self.parse_expression()
+                return expr
         else:
             return self.parse_expression()
     
@@ -420,11 +495,27 @@ class GeEzParser:
         return CallNode(name, arguments)
     
     def parse_assignment(self) -> ASTNode:
-        """Parse assignment: identifier = expression"""
-        identifier = self.previous().value
-        self.consume('ASSIGN', message='Expected =')
+        """Parse assignment: identifier = expression or object.property = expression"""
+        # Parse the left side as an expression (could be identifier or property access)
+        left = self.parse_expression()
+        
+        # Check if this is actually an assignment
+        if not self.match('ASSIGN'):
+            # Not an assignment, return the expression
+            return left
+        
+        # Parse the right side
         value = self.parse_expression()
-        return AssignmentNode(identifier, value)
+        
+        # Check if left side is a simple identifier
+        if isinstance(left, IdentifierNode):
+            return AssignmentNode(left.name, value)
+        elif isinstance(left, AccessNode):
+            # Property assignment: object.property = value
+            return PropertyAssignmentNode(left.object_expr, left.property_name, value)
+        else:
+            # Error: can't assign to this type
+            raise SyntaxError("Can only assign to variables or properties")
     
     def parse_expression(self) -> ASTNode:
         """Parse expression"""
@@ -515,6 +606,25 @@ class GeEzParser:
             self.consume('RBRACKET', 'Expected ]')
             expr = IndexNode(expr, index_expr)
         
+        # Handle property access: expr.property
+        while self.match('DOT'):
+            property_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected property name').value
+            
+            # Handle method calls: expr.method(args)
+            if self.match('LPAREN'):
+                # This is a method call
+                arguments = []
+                if not self.match('RPAREN'):
+                    while True:
+                        arguments.append(self.parse_expression())
+                        if not self.match('COMMA'):
+                            break
+                    self.consume('RPAREN', message='Expected )')
+                return CallMethodNode(expr, property_name, arguments)
+            else:
+                # This is property access
+                expr = AccessNode(expr, property_name)
+        
         return expr
     
     def parse_atom(self) -> ASTNode:
@@ -549,6 +659,10 @@ class GeEzParser:
         if self.match('ADD', 'REMOVE', 'HAS'):
             return self.parse_dict_operation()
         
+        # Parse class instantiation
+        if self.match('NEW'):
+            return self.parse_new_instance()
+        
         # Parse dictionary creation with braces
         if self.match('LBRACE'):
             return self.parse_dict_literal()
@@ -578,7 +692,7 @@ class GeEzParser:
             self.consume('RPAREN', f'Expected ) after {method}')
             return StringMethodNode(method, string_arg, args)
         
-        if self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR'):
+        if self.match('IDENTIFIER', 'AMHARIC_ID', 'FOR', 'SELF', 'THIS'):
             name = self.previous().value
             # Check if this is a function call
             if self.match('LPAREN'):
@@ -622,6 +736,7 @@ class GeEzParser:
                     self.consume('RBRACKET', message='Expected ]')
                     return DictAccessNode(IdentifierNode(name), key)
                 else:
+                    # Return identifier, property access will be handled in parse_primary
                     return IdentifierNode(name)
         
         if self.match('LPAREN'):
@@ -650,6 +765,12 @@ class GeEzParser:
         if self.is_at_end():
             return False
         return self.peek().type == token_type
+    
+    def check_next(self, *token_types: str) -> bool:
+        """Check if the next token matches any of the given types"""
+        if self.current + 1 >= len(self.tokens):
+            return False
+        return self.tokens[self.current + 1].type in token_types
     
     def advance(self) -> Token:
         """Move to next token"""
@@ -841,3 +962,120 @@ class GeEzParser:
             self.consume('RBRACE', message='Expected }')
         
         return DictNode(pairs)
+    
+    def parse_class_declaration(self) -> ASTNode:
+        """Parse class declaration: ክፍል name [ተወላጅ parent] { methods }"""
+        # CLASS token has already been consumed by match() in parse_statement()
+        class_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected class name').value
+        
+        # Parse inheritance
+        parent_class = None
+        if self.match('INHERITS'):
+            parent_class = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected parent class name').value
+        
+        # Parse class body
+        self.consume('LBRACE', message='Expected {')
+        methods = []
+        properties = []
+        
+        while not self.match('RBRACE'):
+            if self.match('METHOD'):
+                method = self.parse_method_declaration()
+                methods.append(method)
+            elif self.match('PROPERTY'):
+                property_node = self.parse_property_declaration()
+                properties.append(property_node)
+            else:
+                # This should not happen in a well-formed class
+                # Skip unexpected tokens
+                if not self.is_at_end():
+                    self.advance()
+        
+        return ClassNode(class_name, methods, properties, parent_class)
+    
+    def parse_method_declaration(self) -> ASTNode:
+        """Parse method declaration: ዘዴ name(params) { body }"""
+        method_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected method name').value
+        
+        # Parse parameters
+        parameters = []
+        self.consume('LPAREN', message='Expected (')
+        if not self.match('RPAREN'):
+            while True:
+                param = self.consume('IDENTIFIER', 'AMHARIC_ID', 'SELF', 'THIS', message='Expected parameter name').value
+                parameters.append(param)
+                if not self.match('COMMA'):
+                    break
+            self.consume('RPAREN', message='Expected )')
+        
+        # Parse method body
+        self.consume('LBRACE', message='Expected {')
+        body = []
+        while not self.match('RBRACE'):
+            # Parse as method body statement
+            statement = self.parse_method_body_statement()
+            if statement:
+                body.append(statement)
+            # Skip semicolons if present
+            self.match('SEMICOLON')
+        
+        # Check if this is a constructor
+        is_constructor = method_name == 'መጀመሪያ' or method_name == 'constructor'
+        
+        return MethodNode(method_name, parameters, body, is_constructor)
+    
+    def parse_property_declaration(self) -> ASTNode:
+        """Parse property declaration: ባህሪ name [= value]"""
+        property_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected property name').value
+        
+        # Parse initial value if present
+        initial_value = None
+        if self.match('ASSIGN'):
+            initial_value = self.parse_expression()
+        
+        return PropertyNode(property_name, initial_value)
+    
+    def parse_new_instance(self) -> ASTNode:
+        """Parse new instance: አዲስ class_name(args)"""
+        class_name = self.consume('IDENTIFIER', 'AMHARIC_ID', message='Expected class name').value
+        
+        # Parse arguments
+        arguments = []
+        self.consume('LPAREN', message='Expected (')
+        if not self.match('RPAREN'):
+            while True:
+                arguments.append(self.parse_expression())
+                if not self.match('COMMA'):
+                    break
+            self.consume('RPAREN', message='Expected )')
+        
+        return NewNode(class_name, arguments)
+    
+    def parse_method_body_statement(self) -> ASTNode:
+        """Parse a statement within a method body"""
+        if self.match('PRINT'):
+            return self.parse_print_statement()
+        elif self.match('RETURN'):
+            return self.parse_return_statement()
+        elif self.check('IDENTIFIER') or self.check('AMHARIC_ID') or self.check('SELF') or self.check('THIS'):
+            # Check if this is a function call
+            if self.check_next('LPAREN'):
+                return self.parse_function_call_statement()
+            else:
+                # Parse as expression (could be property access or method call)
+                expr = self.parse_expression()
+                
+                # Check if this is followed by an assignment
+                if self.match('ASSIGN'):
+                    # It's an assignment to the expression
+                    value = self.parse_expression()
+                    if isinstance(expr, IdentifierNode):
+                        return AssignmentNode(expr.name, value)
+                    elif isinstance(expr, AccessNode):
+                        return PropertyAssignmentNode(expr.object_expr, expr.property_name, value)
+                    else:
+                        raise SyntaxError("Can only assign to variables or properties")
+                else:
+                    return expr
+        else:
+            return self.parse_expression()

@@ -1,0 +1,14 @@
+# Simple class test - no assignments
+ክፍል ሰው {
+    ዘዴ መጀመሪያ(ራሱ) {
+        ማተም "Hello from constructor"
+    }
+    
+    ዘዴ ማተም_መረጃ(ራሱ) {
+        ማተም "Hello from method"
+    }
+}
+
+# Create instance
+አስተዋውቅ ሰው_1 = አዲስ ሰው()
+ሰው_1.ማተም_መረጃ()

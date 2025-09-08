@@ -65,6 +65,13 @@ class GeEzLexer:
         'ጨምር_ወደ': 'ADD',          # add to dictionary
         'ሰርዝ_ከ': 'REMOVE',        # remove from dictionary
         'አለ_በ': 'HAS',            # check if key exists
+        'ክፍል': 'CLASS',            # class definition
+        'አዲስ': 'NEW',              # create new instance
+        'ራሱ': 'SELF',               # self reference
+        'የራሱ': 'THIS',              # this reference
+        'ተወላጅ': 'INHERITS',        # class inheritance
+        'ዘዴ': 'METHOD',             # method definition
+        'ባህሪ': 'PROPERTY',          # property definition
     }
     
     # Token patterns
@@ -93,6 +100,7 @@ class GeEzLexer:
         ('SEMICOLON', r';'),                # Semicolon
         ('COMMA', r','),                    # Comma
         ('COLON', r':'),                    # Colon (for dictionaries)
+        ('DOT', r'\.'),                     # Dot (for property access)
         ('LESS', r'<'),                     # Less than
         ('GREATER', r'>'),                  # Greater than
         ('NEWLINE', r'\n'),                 # Newline

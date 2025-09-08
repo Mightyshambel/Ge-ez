@@ -9,7 +9,8 @@ from .parser import (
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
     FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
     StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode, FileOperationNode,
-    DictNode, DictAccessNode, DictOperationNode
+    DictNode, DictAccessNode, DictOperationNode, ClassNode, MethodNode, PropertyNode,
+    NewNode, AccessNode, CallMethodNode, PropertyAssignmentNode
 )
 from .errors import AmharicErrorMessages
 
@@ -20,6 +21,7 @@ class GeEzInterpreter:
     def __init__(self):
         self.variables: Dict[str, Any] = {}
         self.functions: Dict[str, FunctionNode] = {}
+        self.classes: Dict[str, ClassNode] = {}  # Store class definitions
         self.in_try_catch = False  # Flag to track if we're in try-catch context
         
         # Performance optimizations
@@ -55,6 +57,13 @@ class GeEzInterpreter:
             FunctionNode: self.execute_function_declaration,
             CallNode: self.execute_function_call,
             ReturnNode: self.execute_return,
+            ClassNode: self.execute_class_declaration,
+            MethodNode: self.execute_method_declaration,
+            PropertyNode: self.execute_property_declaration,
+            NewNode: self.execute_new_instance,
+            AccessNode: self.execute_property_access,
+            CallMethodNode: self.execute_method_call,
+            PropertyAssignmentNode: self.execute_property_assignment,
         }
     
     def clear_cache(self) -> None:
@@ -162,6 +171,27 @@ class GeEzInterpreter:
         
         elif isinstance(node, DictOperationNode):
             return self.execute_dict_operation(node)
+        
+        elif isinstance(node, ClassNode):
+            return self.execute_class_declaration(node)
+        
+        elif isinstance(node, MethodNode):
+            return self.execute_method_declaration(node)
+        
+        elif isinstance(node, PropertyNode):
+            return self.execute_property_declaration(node)
+        
+        elif isinstance(node, NewNode):
+            return self.execute_new_instance(node)
+        
+        elif isinstance(node, AccessNode):
+            return self.execute_property_access(node)
+        
+        elif isinstance(node, CallMethodNode):
+            return self.execute_method_call(node)
+        
+        elif isinstance(node, PropertyAssignmentNode):
+            return self.execute_property_assignment(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -744,6 +774,178 @@ class GeEzInterpreter:
                 operation=node.operation
             )
             raise ValueError(error_msg)
+    
+    def execute_class_declaration(self, node: ClassNode) -> Any:
+        """Execute class declaration"""
+        self.classes[node.name] = node
+        return None
+    
+    def execute_method_declaration(self, node: MethodNode) -> Any:
+        """Execute method declaration (within class context)"""
+        # Methods are handled within class context
+        return None
+    
+    def execute_property_declaration(self, node: PropertyNode) -> Any:
+        """Execute property declaration (within class context)"""
+        # Properties are handled within class context
+        return None
+    
+    def execute_new_instance(self, node: NewNode) -> Any:
+        """Execute new instance creation"""
+        if node.class_name not in self.classes:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'undefined_class',
+                class_name=node.class_name
+            )
+            raise RuntimeError(error_msg)
+        
+        class_def = self.classes[node.class_name]
+        
+        # Create instance
+        instance = {
+            '__class__': class_def.name,
+            '__parent__': class_def.parent_class
+        }
+        
+        # Initialize properties
+        for property_node in class_def.properties:
+            if property_node.initial_value:
+                instance[property_node.name] = self.execute(property_node.initial_value)
+            else:
+                instance[property_node.name] = None
+        
+        # Execute constructor if exists
+        constructor = None
+        for method in class_def.methods:
+            if isinstance(method, MethodNode) and method.is_constructor:
+                constructor = method
+                break
+        
+        if constructor:
+            # Create method context
+            old_variables = self.variables.copy()
+            self.variables = instance.copy()
+            
+            # Add self reference
+            self.variables['ራሱ'] = instance
+            self.variables['የራሱ'] = instance
+            
+            # Add constructor parameters
+            param_index = 0
+            for param_name in constructor.parameters:
+                if param_name == 'ራሱ' or param_name == 'የራሱ':
+                    # Skip self parameter, it's already set
+                    continue
+                if param_index < len(node.arguments):
+                    param_value = self.execute(node.arguments[param_index])
+                    self.variables[param_name] = param_value
+                    param_index += 1
+            
+            try:
+                # Execute constructor body
+                for statement in constructor.body:
+                    self.execute(statement)
+            finally:
+                # Restore variables
+                self.variables = old_variables
+        
+        return instance
+    
+    def execute_property_access(self, node: AccessNode) -> Any:
+        """Execute property access: object.property"""
+        object_value = self.execute(node.object_expr)
+        
+        if not isinstance(object_value, dict):
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'type_error_property_access',
+                type=type(object_value).__name__
+            )
+            raise TypeError(error_msg)
+        
+        if node.property_name not in object_value:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'property_not_found',
+                property=node.property_name
+            )
+            raise AttributeError(error_msg)
+        
+        return object_value[node.property_name]
+    
+    def execute_method_call(self, node: CallMethodNode) -> Any:
+        """Execute method call: object.method(args)"""
+        object_value = self.execute(node.object_expr)
+        
+        if not isinstance(object_value, dict):
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'type_error_method_call',
+                type=type(object_value).__name__
+            )
+            raise TypeError(error_msg)
+        
+        class_name = object_value.get('__class__')
+        if not class_name or class_name not in self.classes:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'invalid_object',
+                object=type(object_value).__name__
+            )
+            raise RuntimeError(error_msg)
+        
+        class_def = self.classes[class_name]
+        
+        # Find method
+        method = None
+        for m in class_def.methods:
+            if isinstance(m, MethodNode) and m.name == node.method_name:
+                method = m
+                break
+        
+        if not method:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'method_not_found',
+                method=node.method_name,
+                class_name=class_name
+            )
+            raise AttributeError(error_msg)
+        
+        # Create method context
+        old_variables = self.variables.copy()
+        self.variables = object_value.copy()
+        
+        # Add self reference
+        self.variables['ራሱ'] = object_value
+        self.variables['የራሱ'] = object_value
+        
+        # Add method parameters
+        for i, param_name in enumerate(method.parameters):
+            if i < len(node.arguments):
+                param_value = self.execute(node.arguments[i])
+                self.variables[param_name] = param_value
+        
+        try:
+            # Execute method body
+            result = None
+            for statement in method.body:
+                result = self.execute(statement)
+            return result
+        finally:
+            # Restore variables
+            self.variables = old_variables
+    
+    def execute_property_assignment(self, node: PropertyAssignmentNode) -> Any:
+        """Execute property assignment: object.property = value"""
+        object_value = self.execute(node.object_expr)
+        value = self.execute(node.value_expr)
+        
+        if not isinstance(object_value, dict):
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'type_error_property_access',
+                type=type(object_value).__name__
+            )
+            raise TypeError(error_msg)
+        
+        # Set the property
+        object_value[node.property_name] = value
+        return value
 
 
 class ReturnException(Exception):
