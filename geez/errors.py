@@ -53,6 +53,11 @@ class AmharicErrorMessages:
         'file_operation_failed': "የፋይል ስራ አልተሳካም: {message}",
         'string_method_error': "የገላጭ ዘዴ ስህተት: {message}",
         'builtin_function_error': "የተለዋዋጭ ተግባር ስህተት: {message}",
+        'type_error_dict_access': "ንብብ አይነት እንደ ንብብ መጠቀም አለበት፣ {type} አይደለም",
+        'key_not_found': "ቁልፍ '{key}' በንብብ ውስጥ አልተገኘም",
+        'type_error_dict_operation': "ንብብ አይነት እንደ ንብብ መጠቀም አለበት፣ {type} አይደለም",
+        'add_requires_value': "ጨምር_ወደ ክዋኔ እሴት ያስፈልገዋል",
+        'unknown_dict_operation': "ያልታወቀ የንብብ ክዋኔ: {operation}",
     }
     
     # Context-aware suggestions

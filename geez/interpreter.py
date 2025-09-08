@@ -8,7 +8,8 @@ from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
     FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
-    StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode, FileOperationNode
+    StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode, FileOperationNode,
+    DictNode, DictAccessNode, DictOperationNode
 )
 from .errors import AmharicErrorMessages
 
@@ -96,6 +97,15 @@ class GeEzInterpreter:
         
         elif isinstance(node, FileOperationNode):
             return self.execute_file_operation(node)
+        
+        elif isinstance(node, DictNode):
+            return self.execute_dict(node)
+        
+        elif isinstance(node, DictAccessNode):
+            return self.execute_dict_access(node)
+        
+        elif isinstance(node, DictOperationNode):
+            return self.execute_dict_operation(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -597,6 +607,75 @@ class GeEzInterpreter:
                 
         except Exception as e:
             raise RuntimeError(f"File operation failed: {str(e)}")
+    
+    def execute_dict(self, node: DictNode) -> Any:
+        """Execute dictionary creation"""
+        result = {}
+        for key_node, value_node in node.pairs:
+            key = self.execute(key_node)
+            value = self.execute(value_node)
+            result[key] = value
+        return result
+    
+    def execute_dict_access(self, node: DictAccessNode) -> Any:
+        """Execute dictionary access: dict[key]"""
+        dict_value = self.execute(node.dict_expr)
+        key = self.execute(node.key_expr)
+        
+        if not isinstance(dict_value, dict):
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'type_error_dict_access',
+                type=type(dict_value).__name__
+            )
+            raise TypeError(error_msg)
+        
+        if key not in dict_value:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'key_not_found',
+                key=str(key)
+            )
+            raise KeyError(error_msg)
+        
+        return dict_value[key]
+    
+    def execute_dict_operation(self, node: DictOperationNode) -> Any:
+        """Execute dictionary operation: ADD, REMOVE, HAS"""
+        dict_value = self.execute(node.dict_expr)
+        key = self.execute(node.key_expr)
+        
+        if not isinstance(dict_value, dict):
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'type_error_dict_operation',
+                type=type(dict_value).__name__
+            )
+            raise TypeError(error_msg)
+        
+        if node.operation == 'ADD':
+            if node.value_expr is None:
+                error_msg = AmharicErrorMessages.get_interpreter_error(
+                    'add_requires_value'
+                )
+                raise ValueError(error_msg)
+            value = self.execute(node.value_expr)
+            dict_value[key] = value
+            return True
+        
+        elif node.operation == 'REMOVE':
+            if key in dict_value:
+                del dict_value[key]
+                return True
+            else:
+                return False
+        
+        elif node.operation == 'HAS':
+            return key in dict_value
+        
+        else:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                'unknown_dict_operation',
+                operation=node.operation
+            )
+            raise ValueError(error_msg)
 
 
 class ReturnException(Exception):

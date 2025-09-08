@@ -210,6 +210,34 @@ class FileOperationNode(ASTNode):
         return f"FileOperation({self.operation}, {self.filename}, {self.content})"
 
 
+class DictNode(ASTNode):
+    def __init__(self, pairs: List[tuple]):
+        self.pairs = pairs  # List of (key, value) tuples
+    
+    def __repr__(self):
+        return f"Dict({self.pairs})"
+
+
+class DictAccessNode(ASTNode):
+    def __init__(self, dict_expr: ASTNode, key_expr: ASTNode):
+        self.dict_expr = dict_expr
+        self.key_expr = key_expr
+    
+    def __repr__(self):
+        return f"DictAccess({self.dict_expr}[{self.key_expr}])"
+
+
+class DictOperationNode(ASTNode):
+    def __init__(self, operation: str, dict_expr: ASTNode, key_expr: ASTNode, value_expr: Optional[ASTNode] = None):
+        self.operation = operation  # ADD, REMOVE, HAS
+        self.dict_expr = dict_expr
+        self.key_expr = key_expr
+        self.value_expr = value_expr  # For ADD operation
+    
+    def __repr__(self):
+        return f"DictOperation({self.operation}, {self.dict_expr}, {self.key_expr}, {self.value_expr})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -517,6 +545,14 @@ class GeEzParser:
         if self.match('READ', 'WRITE', 'APPEND', 'EXISTS', 'DELETE', 'LIST', 'CREATE'):
             return self.parse_file_operation()
         
+        # Parse dictionary operations
+        if self.match('ADD', 'REMOVE', 'HAS'):
+            return self.parse_dict_operation()
+        
+        # Parse dictionary creation with braces
+        if self.match('LBRACE'):
+            return self.parse_dict_literal()
+        
         # Parse string methods
         if self.match('LENGTH', 'SPLIT', 'JOIN', 'UPPER', 'LOWER', 'REPLACE'):
             method = self.previous().type  # Use token type instead of value
@@ -580,23 +616,18 @@ class GeEzParser:
                         self.consume('RPAREN', message='Expected )')
                     return CallNode(name, arguments)
             else:
-                return IdentifierNode(name)
+                # Check for dictionary access: identifier[key]
+                if self.match('LBRACKET'):
+                    key = self.parse_expression()
+                    self.consume('RBRACKET', message='Expected ]')
+                    return DictAccessNode(IdentifierNode(name), key)
+                else:
+                    return IdentifierNode(name)
         
         if self.match('LPAREN'):
             expr = self.parse_expression()
             self.consume('RPAREN', 'Expected )')
             return expr
-        
-        if self.match('LBRACKET'):
-            # Parse list: [expr1, expr2, ...]
-            elements = []
-            if not self.match('RBRACKET'):
-                while True:
-                    elements.append(self.parse_expression())
-                    if not self.match('COMMA'):
-                        break
-                self.consume('RBRACKET', message='Expected ]')
-            return ListNode(elements)
         
         error_msg = AmharicErrorMessages.get_parser_error(
             'unexpected_token',
@@ -771,3 +802,42 @@ class GeEzParser:
                 content = self.parse_expression()
         
         return FileOperationNode(operation, filename, content)
+    
+    def parse_dict_operation(self) -> ASTNode:
+        """Parse dictionary operation: ጨምር_ወደ/ሰርዝ_ከ/አለ_በ dict key [value]"""
+        operation = self.previous().type  # ADD, REMOVE, HAS
+        
+        # Parse dictionary operations: ADD, REMOVE, HAS
+        # Parse dictionary expression
+        dict_expr = self.parse_expression()
+        
+        # Parse key
+        key_expr = self.parse_expression()
+        
+        # Parse value for ADD operation
+        value_expr = None
+        if operation == 'ADD':
+            if not self.match('SEMICOLON', 'NEWLINE'):
+                value_expr = self.parse_expression()
+        
+        return DictOperationNode(operation, dict_expr, key_expr, value_expr)
+    
+    def parse_dict_literal(self) -> ASTNode:
+        """Parse dictionary literal: {key: value, key2: value2}"""
+        pairs = []
+        
+        if not self.match('RBRACE'):
+            while True:
+                # Parse key
+                key = self.parse_expression()
+                self.consume('COLON', message='Expected :')
+                # Parse value
+                value = self.parse_expression()
+                pairs.append((key, value))
+                
+                if not self.match('COMMA'):
+                    break
+            
+            self.consume('RBRACE', message='Expected }')
+        
+        return DictNode(pairs)

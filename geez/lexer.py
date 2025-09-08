@@ -61,6 +61,10 @@ class GeEzLexer:
         'ሰርዝ': 'DELETE',          # delete file
         'ዝርዝር': 'LIST',           # list directory
         'ፍጠር': 'CREATE',          # create directory
+        'አካል': 'ELEMENT',         # dictionary element access
+        'ጨምር_ወደ': 'ADD',          # add to dictionary
+        'ሰርዝ_ከ': 'REMOVE',        # remove from dictionary
+        'አለ_በ': 'HAS',            # check if key exists
     }
     
     # Token patterns
@@ -88,6 +92,7 @@ class GeEzLexer:
         ('RBRACKET', r'\]'),                # Right bracket (for lists)
         ('SEMICOLON', r';'),                # Semicolon
         ('COMMA', r','),                    # Comma
+        ('COLON', r':'),                    # Colon (for dictionaries)
         ('LESS', r'<'),                     # Less than
         ('GREATER', r'>'),                  # Greater than
         ('NEWLINE', r'\n'),                 # Newline
