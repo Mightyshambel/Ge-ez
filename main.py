@@ -13,7 +13,7 @@ def main():
     print("Welcome to Ge-ez! (ግእዝ አማርኛ የፕሮግራሚንግ ቋንቋ)")
     print("Amharic Programming Language")
     print("=" * 40)
-    
+
     # Run the CLI
     cli_main()
 

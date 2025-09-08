@@ -13,7 +13,7 @@ Features:
 
 Usage:
     from geez.interpreter import GeEzInterpreter
-    
+
     interpreter = GeEzInterpreter()
     result = interpreter.interpret('ማተም "ሰላም አማርኛ!"')
 """
@@ -26,4 +26,4 @@ from .lexer import GeEzLexer, Token
 from .parser import GeEzParser
 from .interpreter import GeEzInterpreter
 
-__all__ = ['GeEzLexer', 'Token', 'GeEzParser', 'GeEzInterpreter']
+__all__ = ["GeEzLexer", "Token", "GeEzParser", "GeEzInterpreter"]

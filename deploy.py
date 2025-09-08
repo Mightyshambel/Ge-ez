@@ -15,7 +15,9 @@ def run_command(command, description):
     """Run a command and handle errors."""
     print(f"🔄 {description}...")
     try:
-        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        result = subprocess.run(
+            command, shell=True, check=True, capture_output=True, text=True
+        )
         print(f"✅ {description} completed successfully")
         return result
     except subprocess.CalledProcessError as e:
@@ -27,10 +29,11 @@ def run_command(command, description):
 def clean_build():
     """Clean build artifacts."""
     print("🧹 Cleaning build artifacts...")
-    dirs_to_clean = ['build', 'dist', '*.egg-info']
+    dirs_to_clean = ["build", "dist", "*.egg-info"]
     for pattern in dirs_to_clean:
-        if '*' in pattern:
+        if "*" in pattern:
             import glob
+
             for path in glob.glob(pattern):
                 if os.path.isdir(path):
                     shutil.rmtree(path)
@@ -64,7 +67,7 @@ def check_package():
 
 def deploy_to_pypi():
     """Deploy to PyPI."""
-    if input("🚀 Deploy to PyPI? (y/N): ").lower() == 'y':
+    if input("🚀 Deploy to PyPI? (y/N): ").lower() == "y":
         run_command("twine upload dist/*", "Deploying to PyPI")
     else:
         print("⏭️ Skipping PyPI deployment")
@@ -72,7 +75,7 @@ def deploy_to_pypi():
 
 def deploy_docs():
     """Deploy documentation."""
-    if input("📚 Deploy documentation? (y/N): ").lower() == 'y':
+    if input("📚 Deploy documentation? (y/N): ").lower() == "y":
         run_command("mkdocs build", "Building documentation")
         run_command("mkdocs gh-deploy", "Deploying documentation")
     else:
@@ -83,31 +86,31 @@ def main():
     """Main deployment process."""
     print("🚀 Ge-ez Deployment Script")
     print("=" * 50)
-    
+
     # Check if we're in the right directory
-    if not os.path.exists('setup.py'):
+    if not os.path.exists("setup.py"):
         print("❌ Error: setup.py not found. Please run from project root.")
         sys.exit(1)
-    
+
     # Clean previous builds
     clean_build()
-    
+
     # Run tests
     run_tests()
-    
+
     # Run linting
     run_linting()
-    
+
     # Build package
     build_package()
-    
+
     # Check package
     check_package()
-    
+
     # Deploy options
     deploy_to_pypi()
     deploy_docs()
-    
+
     print("\n🎉 Deployment process completed!")
     print("📦 Package built in dist/ directory")
     print("📚 Documentation available locally")
