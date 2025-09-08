@@ -3,16 +3,16 @@
 Test suite for Ge-ez (ግእዝ) Amharic Programming Language
 """
 
-import unittest
-import sys
 import os
+import sys
+import unittest
 
 # Add the geez module to the path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # noqa: E402
 
-from geez.lexer import GeEzLexer
-from geez.parser import GeEzParser
-from geez.interpreter import GeEzInterpreter
+from geez.interpreter import GeEzInterpreter  # noqa: E402
+from geez.lexer import GeEzLexer  # noqa: E402
+from geez.parser import GeEzParser  # noqa: E402
 
 
 class TestLexer(unittest.TestCase):
