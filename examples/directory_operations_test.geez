@@ -1,0 +1,7 @@
+# Directory Operations Test
+ፍጠር "test_dir"
+አስተዋውቅ ዲሬክቶሪ_አለ = አለ "test_dir"
+ማተም "Directory exists: " + ዲሬክቶሪ_አለ
+
+አስተዋውቅ የዲሬክቶሪ_ዝርዝር = ዝርዝር "test_dir"
+ማተም "Directory contents: " + የዲሬክቶሪ_ዝርዝር

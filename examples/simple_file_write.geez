@@ -1,0 +1,4 @@
+# Simple File Write Test
+ጻፍ "simple_test.txt" "ሰላም አማርኛ!"
+አስተዋውቅ ይዘት = አንብብ "simple_test.txt"
+ማተም ይዘት

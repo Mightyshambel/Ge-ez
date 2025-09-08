@@ -199,6 +199,16 @@ class ThrowNode(ASTNode):
         return f"Throw({self.expression})"
 
 
+class FileOperationNode(ASTNode):
+    def __init__(self, operation: str, filename: ASTNode, content: Optional[ASTNode] = None):
+        self.operation = operation  # READ, WRITE, APPEND, EXISTS, DELETE, LIST, CREATE
+        self.filename = filename
+        self.content = content  # For WRITE and APPEND operations
+    
+    def __repr__(self):
+        return f"FileOperation({self.operation}, {self.filename}, {self.content})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
     
@@ -496,6 +506,10 @@ class GeEzParser:
                 self.consume('RPAREN', 'Expected )')
             return InputNode(prompt)
         
+        # Parse file operations
+        if self.match('READ', 'WRITE', 'APPEND', 'EXISTS', 'DELETE', 'LIST', 'CREATE'):
+            return self.parse_file_operation()
+        
         # Parse string methods
         if self.match('LENGTH', 'SPLIT', 'JOIN', 'UPPER', 'LOWER', 'REPLACE'):
             method = self.previous().type  # Use token type instead of value
@@ -675,3 +689,18 @@ class GeEzParser:
         """Parse throw statement: አስተላልፍ expression"""
         expression = self.parse_expression()
         return ThrowNode(expression)
+    
+    def parse_file_operation(self) -> ASTNode:
+        """Parse file operation: አንብብ/ጻፍ/ጨምር/አለ/ሰርዝ/ዝርዝር/ፍጠር filename [content]"""
+        operation = self.previous().type  # READ, WRITE, APPEND, etc.
+        
+        # Parse filename
+        filename = self.parse_expression()
+        
+        # Parse content for WRITE and APPEND operations
+        content = None
+        if operation in ['WRITE', 'APPEND']:
+            if not self.match('SEMICOLON', 'NEWLINE'):
+                content = self.parse_expression()
+        
+        return FileOperationNode(operation, filename, content)

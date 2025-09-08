@@ -53,6 +53,13 @@ class GeEzLexer:
         'ያዝ': 'CATCH',           # catch
         'በመጨረሻ': 'FINALLY',      # finally
         'አስተላልፍ': 'THROW',       # throw
+        'አንብብ': 'READ',          # read file
+        'ጻፍ': 'WRITE',            # write file
+        'ጨምር': 'APPEND',          # append to file
+        'አለ': 'EXISTS',           # file exists
+        'ሰርዝ': 'DELETE',          # delete file
+        'ዝርዝር': 'LIST',           # list directory
+        'ፍጠር': 'CREATE',          # create directory
     }
     
     # Token patterns

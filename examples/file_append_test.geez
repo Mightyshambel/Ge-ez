@@ -1,0 +1,5 @@
+# File Append Test
+ጻፍ "append_test.txt" "የመጀመሪያ መስመር"
+ጨምር "append_test.txt" "\nየሁለተኛ መስመር"
+አስተዋውቅ ይዘት = አንብብ "append_test.txt"
+ማተም ይዘት

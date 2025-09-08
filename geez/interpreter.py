@@ -8,7 +8,7 @@ from .parser import (
     ASTNode, NumberNode, StringNode, BooleanNode, IdentifierNode,
     BinaryOpNode, UnaryOpNode, AssignmentNode, PrintNode, IfNode, WhileNode,
     FunctionNode, CallNode, ReturnNode, ForNode, ListNode, IndexNode, InputNode,
-    StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode
+    StringMethodNode, BuiltinFunctionNode, TryCatchNode, ThrowNode, FileOperationNode
 )
 
 
@@ -88,6 +88,9 @@ class GeEzInterpreter:
         
         elif isinstance(node, ThrowNode):
             return self.execute_throw(node)
+        
+        elif isinstance(node, FileOperationNode):
+            return self.execute_file_operation(node)
         
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -499,6 +502,68 @@ class GeEzInterpreter:
         """Execute throw statement"""
         exception_value = self.execute(node.expression)
         raise Exception(str(exception_value))
+    
+    def execute_file_operation(self, node: FileOperationNode) -> Any:
+        """Execute file operation"""
+        import os
+        
+        filename = self.execute(node.filename)
+        if not isinstance(filename, str):
+            filename = str(filename)
+        
+        try:
+            if node.operation == 'READ':
+                # Read file content
+                with open(filename, 'r', encoding='utf-8') as f:
+                    return f.read()
+            
+            elif node.operation == 'WRITE':
+                # Write content to file
+                if node.content is None:
+                    raise ValueError("ጻፍ operation requires content to write")
+                content = self.execute(node.content)
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(str(content))
+                return True
+            
+            elif node.operation == 'APPEND':
+                # Append content to file
+                if node.content is None:
+                    raise ValueError("ጨምር operation requires content to append")
+                content = self.execute(node.content)
+                with open(filename, 'a', encoding='utf-8') as f:
+                    f.write(str(content))
+                return True
+            
+            elif node.operation == 'EXISTS':
+                # Check if file exists
+                return os.path.exists(filename)
+            
+            elif node.operation == 'DELETE':
+                # Delete file
+                if os.path.exists(filename):
+                    os.remove(filename)
+                    return True
+                else:
+                    return False
+            
+            elif node.operation == 'LIST':
+                # List directory contents
+                if os.path.isdir(filename):
+                    return os.listdir(filename)
+                else:
+                    raise ValueError(f"Directory not found: {filename}")
+            
+            elif node.operation == 'CREATE':
+                # Create directory
+                os.makedirs(filename, exist_ok=True)
+                return True
+            
+            else:
+                raise ValueError(f"Unknown file operation: {node.operation}")
+                
+        except Exception as e:
+            raise RuntimeError(f"File operation failed: {str(e)}")
 
 
 class ReturnException(Exception):

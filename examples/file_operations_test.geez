@@ -1,0 +1,53 @@
+# File I/O Operations Test - ግእዝ
+# Testing all file operations: read, write, append, exists, delete, list, create
+
+ማተም "=== Testing File I/O Operations ==="
+
+# Test 1: Write to file
+ማተም "Writing to test file..."
+ጻፍ "test_file.txt" "ሰላም አማርኛ! ይህ የፈተና ፋይል ነው።"
+
+# Test 2: Check if file exists
+አስተዋውቅ አለ_ነው = አለ "test_file.txt"
+ማተም "File exists: " + አለ_ነው
+
+# Test 3: Read from file
+አስተዋውቅ ይዘት = አንብብ "test_file.txt"
+ማተም "File content: " + ይዘት
+
+# Test 4: Append to file
+ማተም "Appending to file..."
+ጨምር "test_file.txt" "\nይህ ተጨማሪ ጽሑፍ ነው።"
+
+# Test 5: Read updated content
+አስተዋውቅ አዲስ_ይዘት = አንብብ "test_file.txt"
+ማተም "Updated content: " + አዲስ_ይዘት
+
+# Test 6: Create directory
+ማተም "Creating test directory..."
+ፍጠር "test_directory"
+አስተዋውቅ ዲሬክቶሪ_አለ = አለ "test_directory"
+ማተም "Directory created: " + ዲሬክቶሪ_አለ
+
+# Test 7: List directory contents
+ማተም "Listing current directory..."
+አስተዋውቅ የዲሬክቶሪ_ዝርዝር = ዝርዝር "."
+ማተም "Directory contents: " + የዲሬክቶሪ_ዝርዝር
+
+# Test 8: Write to file in subdirectory
+ጻፍ "test_directory/sub_file.txt" "ይህ በዲሬክቶሪ ውስጥ ያለ ፋይል ነው።"
+
+# Test 9: Read from subdirectory file
+አስተዋውቅ የዲሬክቶሪ_ይዘት = አንብብ "test_directory/sub_file.txt"
+ማተም "Subdirectory file content: " + የዲሬክቶሪ_ይዘት
+
+# Test 10: Delete file
+ማተም "Deleting test file..."
+አስተዋውቅ ተሰርዟል = ሰርዝ "test_file.txt"
+ማተም "File deleted: " + ተሰርዟል
+
+# Test 11: Check if deleted file exists
+አስተዋውቅ አሁን_አለ = አለ "test_file.txt"
+ማተም "File still exists after deletion: " + አሁን_አለ
+
+ማተም "\n=== All file I/O operations completed! ==="

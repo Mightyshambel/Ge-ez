@@ -1,0 +1,7 @@
+# File Exists Test
+አስተዋውቅ አለ_ነው = አለ "nonexistent_file.txt"
+ማተም "File exists: " + አለ_ነው
+
+ጻፍ "existing_file.txt" "Test content"
+አስተዋውቅ አለ_ነው2 = አለ "existing_file.txt"
+ማተም "File exists: " + አለ_ነው2
