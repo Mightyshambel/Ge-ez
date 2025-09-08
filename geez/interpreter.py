@@ -21,6 +21,62 @@ class GeEzInterpreter:
         self.variables: Dict[str, Any] = {}
         self.functions: Dict[str, FunctionNode] = {}
         self.in_try_catch = False  # Flag to track if we're in try-catch context
+        
+        # Performance optimizations
+        self._expression_cache: Dict[str, Any] = {}  # Cache for computed expressions
+        self._variable_cache: Dict[str, Any] = {}    # Cache for variable lookups
+        self._function_cache: Dict[str, FunctionNode] = {}  # Cache for function lookups
+        self._cache_enabled = True  # Enable/disable caching
+        
+        # Dispatch table for faster node execution
+        self._node_handlers = {
+            NumberNode: lambda n: n.value,
+            StringNode: lambda n: n.value,
+            BooleanNode: lambda n: n.value,
+            IdentifierNode: lambda n: self.get_variable(n.name),
+            ListNode: self.execute_list,
+            IndexNode: self.execute_index,
+            InputNode: self.execute_input,
+            StringMethodNode: self.execute_string_method,
+            BuiltinFunctionNode: self.execute_builtin_function,
+            TryCatchNode: self.execute_try_catch,
+            ThrowNode: self.execute_throw,
+            FileOperationNode: self.execute_file_operation,
+            DictNode: self.execute_dict,
+            DictAccessNode: self.execute_dict_access,
+            DictOperationNode: self.execute_dict_operation,
+            BinaryOpNode: self.execute_binary_op,
+            UnaryOpNode: self.execute_unary_op,
+            AssignmentNode: self.execute_assignment,
+            PrintNode: self.execute_print,
+            IfNode: self.execute_if,
+            WhileNode: self.execute_while,
+            ForNode: self.execute_for,
+            FunctionNode: self.execute_function_declaration,
+            CallNode: self.execute_function_call,
+            ReturnNode: self.execute_return,
+        }
+    
+    def clear_cache(self) -> None:
+        """Clear all caches for memory management"""
+        self._expression_cache.clear()
+        self._variable_cache.clear()
+        self._function_cache.clear()
+    
+    def enable_cache(self, enabled: bool = True) -> None:
+        """Enable or disable caching"""
+        self._cache_enabled = enabled
+        if not enabled:
+            self.clear_cache()
+    
+    def get_cache_stats(self) -> Dict[str, int]:
+        """Get cache statistics for performance monitoring"""
+        return {
+            'expression_cache_size': len(self._expression_cache),
+            'variable_cache_size': len(self._variable_cache),
+            'function_cache_size': len(self._function_cache),
+            'cache_enabled': self._cache_enabled
+        }
     
     def interpret(self, code: str) -> Any:
         """Interpret Ge-ez code"""
@@ -193,9 +249,9 @@ class GeEzInterpreter:
             raise RuntimeError(f"Unknown unary operator: {node.operator}")
     
     def execute_assignment(self, node: AssignmentNode) -> Any:
-        """Execute assignment"""
+        """Execute assignment with optimized variable setting"""
         value = self.execute(node.value)
-        self.variables[node.identifier] = value
+        self.set_variable(node.identifier, value)
         return value
     
     def execute_print(self, node: PrintNode) -> Any:
@@ -255,9 +311,18 @@ class GeEzInterpreter:
         return None
     
     def get_variable(self, name: str) -> Any:
-        """Get variable value"""
+        """Get variable value with caching optimization"""
+        # Check cache first if enabled
+        if self._cache_enabled and name in self._variable_cache:
+            return self._variable_cache[name]
+        
+        # Check variables dictionary
         if name in self.variables:
-            return self.variables[name]
+            value = self.variables[name]
+            # Cache the result if caching is enabled
+            if self._cache_enabled:
+                self._variable_cache[name] = value
+            return value
         else:
             error_msg = AmharicErrorMessages.format_error_with_suggestion(
                 'undefined_variable',
@@ -267,8 +332,11 @@ class GeEzInterpreter:
             raise RuntimeError(error_msg)
     
     def set_variable(self, name: str, value: Any) -> None:
-        """Set variable value"""
+        """Set variable value with cache update"""
         self.variables[name] = value
+        # Update cache if enabled
+        if self._cache_enabled:
+            self._variable_cache[name] = value
     
     def clear_variables(self) -> None:
         """Clear all variables"""
