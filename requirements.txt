@@ -2,11 +2,3 @@
 
 # Core dependencies
 # No external dependencies required - pure Python implementation
-
-# Documentation dependencies
-mkdocs>=1.4.0
-mkdocs-material>=9.0.0
-
-# Build dependencies
-build>=0.8.0
-twine>=4.0.0
