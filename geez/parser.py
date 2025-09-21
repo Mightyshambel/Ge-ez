@@ -362,6 +362,24 @@ class FromImportNode(ASTNode):
         return f"FromImport(from {self.module_name} import {self.function_name})"
 
 
+class TupleNode(ASTNode):
+    """Tuple literal: (expr1, expr2, expr3)"""
+    def __init__(self, elements: List[ASTNode]):
+        self.elements = elements
+
+    def __repr__(self):
+        return f"Tuple({len(self.elements)} elements)"
+
+
+class SetNode(ASTNode):
+    """Set literal: {expr1, expr2, expr3}"""
+    def __init__(self, elements: List[ASTNode]):
+        self.elements = elements
+
+    def __repr__(self):
+        return f"Set({len(self.elements)} elements)"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
 
@@ -741,9 +759,15 @@ class GeEzParser:
         if self.match("NEW"):
             return self.parse_new_instance()
 
-        # Parse dictionary creation with braces
+        # Parse dictionary or set creation with braces
         if self.match("LBRACE"):
-            return self.parse_dict_literal()
+            # Check if this is a dictionary (has colons) or set (no colons)
+            if self.check_next("COLON"):
+                # This is a dictionary - parse key-value pairs
+                return self.parse_dict_literal()
+            else:
+                # This is a set - parse values only
+                return self.parse_set_literal()
 
         # Parse string methods
         if self.match("LENGTH", "SPLIT", "JOIN", "UPPER", "LOWER", "REPLACE"):
@@ -818,9 +842,29 @@ class GeEzParser:
                     return IdentifierNode(name)
 
         if self.match("LPAREN"):
-            expr = self.parse_expression()
-            self.consume("RPAREN", "Expected )")
-            return expr
+            # Check if this is a tuple by looking for comma or empty tuple
+            # For nested tuples, we need to look ahead to find a comma
+            if self.peek().type == "RPAREN":
+                # Empty tuple
+                return self.parse_tuple_literal()
+            else:
+                # Look ahead to see if there's a comma before the matching )
+                paren_count = 1
+                i = self.current
+                while i < len(self.tokens) and paren_count > 0:
+                    if self.tokens[i].type == "LPAREN":
+                        paren_count += 1
+                    elif self.tokens[i].type == "RPAREN":
+                        paren_count -= 1
+                    elif self.tokens[i].type == "COMMA" and paren_count == 1:
+                        # Found a comma at the top level - this is a tuple
+                        return self.parse_tuple_literal()
+                    i += 1
+                
+                # No comma found at top level - this is grouping
+                expr = self.parse_expression()
+                self.consume("RPAREN", "Expected )")
+                return expr
 
         error_msg = AmharicErrorMessages.get_parser_error(
             "unexpected_token",
@@ -1209,3 +1253,45 @@ class GeEzParser:
         ).value
         
         return FromImportNode(module_name, function_name)
+
+    def parse_tuple_literal(self) -> ASTNode:
+        """Parse tuple literal: (expr1, expr2, expr3)"""
+        elements = []
+        
+        # Check if this is an empty tuple
+        if self.peek().type == "RPAREN":
+            self.consume("RPAREN", message="Expected )")
+            return TupleNode(elements)
+        
+        # Parse non-empty tuple
+        while True:
+            # Parse expression
+            expr = self.parse_expression()
+            elements.append(expr)
+            
+            if not self.match("COMMA"):
+                break
+            
+            # Check if there's a trailing comma (comma followed by )
+            if self.peek().type == "RPAREN":
+                break
+        
+        self.consume("RPAREN", message="Expected )")
+        return TupleNode(elements)
+
+    def parse_set_literal(self) -> ASTNode:
+        """Parse set literal: {expr1, expr2, expr3}"""
+        elements = []
+        
+        if not self.match("RBRACE"):
+            while True:
+                # Parse expression
+                expr = self.parse_expression()
+                elements.append(expr)
+                
+                if not self.match("COMMA"):
+                    break
+            
+            self.consume("RBRACE", message="Expected }")
+        
+        return SetNode(elements)

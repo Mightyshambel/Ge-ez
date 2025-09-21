@@ -40,6 +40,8 @@ from .parser import (
     PropertyAssignmentNode,
     ImportNode,
     FromImportNode,
+    TupleNode,
+    SetNode,
 )
 from .errors import AmharicErrorMessages
 
@@ -96,6 +98,8 @@ class GeEzInterpreter:
             PropertyAssignmentNode: self.execute_property_assignment,
             ImportNode: self.execute_import,
             FromImportNode: self.execute_from_import,
+            TupleNode: self.execute_tuple,
+            SetNode: self.execute_set,
         }
 
     def clear_cache(self) -> None:
@@ -229,6 +233,12 @@ class GeEzInterpreter:
 
         elif isinstance(node, FromImportNode):
             return self.execute_from_import(node)
+
+        elif isinstance(node, TupleNode):
+            return self.execute_tuple(node)
+
+        elif isinstance(node, SetNode):
+            return self.execute_set(node)
 
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -1131,6 +1141,22 @@ class GeEzInterpreter:
             module_content[class_name] = class_node
         
         return module_content
+
+    def execute_tuple(self, node: TupleNode) -> tuple:
+        """Execute tuple literal: (expr1, expr2, expr3)"""
+        elements = []
+        for element_node in node.elements:
+            element_value = self.execute(element_node)
+            elements.append(element_value)
+        return tuple(elements)
+
+    def execute_set(self, node: SetNode) -> set:
+        """Execute set literal: {expr1, expr2, expr3}"""
+        elements = []
+        for element_node in node.elements:
+            element_value = self.execute(element_node)
+            elements.append(element_value)
+        return set(elements)
 
 
 class ReturnException(Exception):
