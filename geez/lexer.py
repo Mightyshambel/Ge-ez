@@ -74,6 +74,8 @@ class GeEzLexer:
         "ባህሪ": "PROPERTY",  # property definition
         "አመጣ": "IMPORT",  # import module
         "ከ": "FROM",  # from (for imports)
+        "ተሰብር": "BREAK",  # break loop
+        "ቀጥል": "CONTINUE",  # continue loop
     }
 
     # Token patterns

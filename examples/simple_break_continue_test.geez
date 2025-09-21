@@ -1,0 +1,36 @@
+# simple_break_continue_test.geez - Simple Break/Continue test
+# This file tests basic break/continue functionality
+
+ማተም "=== Simple Break/Continue Test ==="
+
+# Test 1: Simple Break
+ማተም "1. Simple Break Test..."
+አስተዋውቅ ቆጠራ = 0
+በመሆኑ ቆጠራ < 5 {
+    ቆጠራ = ቆጠራ + 1
+    ማተም "   Count:" + ቆጠራ
+    ከሆነ ቆጠራ == 3 {
+        ማተም "   Breaking!"
+        ተሰብር
+    }
+}
+
+# Test 2: Simple Continue
+ማተም "2. Simple Continue Test..."
+አስተዋውቅ ቆጠራ_2 = 0
+በመሆኑ ቆጠራ_2 < 5 {
+    ቆጠራ_2 = ቆጠራ_2 + 1
+    ከሆነ ቆጠራ_2 == 2 {
+        ማተም "   Skipping:" + ቆጠራ_2
+        ቀጥል
+    }
+    ማተም "   Processing:" + ቆጠራ_2
+}
+
+# Test 3: Simple For Loop (without break/continue)
+ማተም "3. Simple For Loop Test..."
+ለ እኔ በ 3 {
+    ማተም "   For loop i:" + እኔ
+}
+
+ማተም "=== Test Complete ==="

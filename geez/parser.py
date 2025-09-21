@@ -380,6 +380,18 @@ class SetNode(ASTNode):
         return f"Set({len(self.elements)} elements)"
 
 
+class BreakNode(ASTNode):
+    """Break statement: ተሰብር"""
+    def __repr__(self):
+        return "Break()"
+
+
+class ContinueNode(ASTNode):
+    """Continue statement: ቀጥል"""
+    def __repr__(self):
+        return "Continue()"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
 
@@ -424,6 +436,10 @@ class GeEzParser:
             return self.parse_import_statement()
         elif self.match("FROM"):
             return self.parse_from_import_statement()
+        elif self.match("BREAK"):
+            return self.parse_break_statement()
+        elif self.match("CONTINUE"):
+            return self.parse_continue_statement()
         elif (
             self.check("IDENTIFIER")
             or self.check("AMHARIC_ID")
@@ -1295,3 +1311,11 @@ class GeEzParser:
             self.consume("RBRACE", message="Expected }")
         
         return SetNode(elements)
+
+    def parse_break_statement(self) -> ASTNode:
+        """Parse break statement: ተሰብር"""
+        return BreakNode()
+
+    def parse_continue_statement(self) -> ASTNode:
+        """Parse continue statement: ቀጥል"""
+        return ContinueNode()

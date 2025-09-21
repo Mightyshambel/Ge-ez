@@ -42,6 +42,8 @@ from .parser import (
     FromImportNode,
     TupleNode,
     SetNode,
+    BreakNode,
+    ContinueNode,
 )
 from .errors import AmharicErrorMessages
 
@@ -100,6 +102,8 @@ class GeEzInterpreter:
             FromImportNode: self.execute_from_import,
             TupleNode: self.execute_tuple,
             SetNode: self.execute_set,
+            BreakNode: self.execute_break,
+            ContinueNode: self.execute_continue,
         }
 
     def clear_cache(self) -> None:
@@ -240,6 +244,12 @@ class GeEzInterpreter:
         elif isinstance(node, SetNode):
             return self.execute_set(node)
 
+        elif isinstance(node, BreakNode):
+            return self.execute_break(node)
+
+        elif isinstance(node, ContinueNode):
+            return self.execute_continue(node)
+
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
 
@@ -364,8 +374,15 @@ class GeEzInterpreter:
     def execute_while(self, node: WhileNode) -> Any:
         """Execute while loop"""
         while self.execute(node.condition):
-            for statement in node.block:
-                self.execute(statement)
+            try:
+                for statement in node.block:
+                    self.execute(statement)
+            except BreakException:
+                # Break out of the loop
+                break
+            except ContinueException:
+                # Continue to next iteration
+                continue
 
         return None
 
@@ -380,8 +397,15 @@ class GeEzInterpreter:
         if isinstance(iterable, (int, float)):
             for i in range(int(iterable)):
                 self.variables[node.variable] = i
-                for statement in node.body:
-                    self.execute(statement)
+                try:
+                    for statement in node.body:
+                        self.execute(statement)
+                except BreakException:
+                    # Break out of the loop
+                    break
+                except ContinueException:
+                    # Continue to next iteration
+                    continue
         else:
             raise RuntimeError(f"Cannot iterate over {type(iterable)}")
 
@@ -1157,6 +1181,24 @@ class GeEzInterpreter:
             element_value = self.execute(element_node)
             elements.append(element_value)
         return set(elements)
+
+    def execute_break(self, node: BreakNode) -> Any:
+        """Execute break statement: ተሰብር"""
+        raise BreakException()
+
+    def execute_continue(self, node: ContinueNode) -> Any:
+        """Execute continue statement: ቀጥል"""
+        raise ContinueException()
+
+
+class BreakException(Exception):
+    """Exception used for break statements"""
+    pass
+
+
+class ContinueException(Exception):
+    """Exception used for continue statements"""
+    pass
 
 
 class ReturnException(Exception):

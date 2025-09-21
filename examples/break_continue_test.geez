@@ -1,0 +1,91 @@
+# break_continue_test.geez - Test Break/Continue statements
+# This file demonstrates the new Break/Continue loop control features
+
+ማተም "=== Ge-ez Break/Continue Test ==="
+ማተም ""
+
+# Test 1: Basic Break Statement
+ማተም "1. Testing Break Statement..."
+አስተዋውቅ ቆጠራ = 0
+በመሆኑ ቆጠራ < 10 {
+    ቆጠራ = ቆጠራ + 1
+    ማተም "   Count:" + ቆጠራ
+    ከሆነ ቆጠራ == 5 {
+        ማተም "   Breaking at 5!"
+        ተሰብር
+    }
+}
+
+ማተም "   Loop ended. Final count:" + ቆጠራ
+
+# Test 2: Basic Continue Statement
+ማተም "2. Testing Continue Statement..."
+አስተዋውቅ ቆጠራ_2 = 0
+በመሆኑ ቆጠራ_2 < 8 {
+    ቆጠራ_2 = ቆጠራ_2 + 1
+    ከሆነ ቆጠራ_2 == 3 ወይም ቆጠራ_2 == 6 {
+        ማተም "   Skipping:" + ቆጠራ_2
+        ቀጥል
+    }
+    ማተም "   Processing:" + ቆጠራ_2
+}
+
+# Test 3: Break in For Loop
+ማተም "3. Testing Break in For Loop..."
+ለ እኔ በ 10 {
+    ማተም "   For iteration:" + እኔ
+    ከሆነ እኔ == 4 {
+        ማተም "   Breaking at iteration 4!"
+        ተሰብር
+    }
+}
+
+# Test 4: Continue in For Loop
+ማተም "4. Testing Continue in For Loop..."
+ለ እኔ በ 7 {
+    ከሆነ እኔ == 2 ወይም እኔ == 5 {
+        ማተም "   Skipping iteration:" + እኔ
+        ቀጥል
+    }
+    ማተም "   Processing iteration:" + እኔ
+}
+
+# Test 5: Nested Loops with Break
+ማተም "5. Testing Nested Loops with Break..."
+ለ ውጫዊ በ 3 {
+    ማተም "   Outer loop:" + ውጫዊ
+    ለ ውስጣዊ በ 5 {
+        ማተም "     Inner loop:" + ውስጣዊ
+        ከሆነ ውስጣዊ == 2 {
+            ማተም "     Breaking inner loop at 2!"
+            ተሰብር
+        }
+    }
+    ማተም "   Back to outer loop"
+}
+
+# Test 6: Complex Break/Continue Logic
+ማተም "6. Testing Complex Break/Continue Logic..."
+አስተዋውቅ የተገኘ_ቁጥር = 0
+ለ እኔ በ 20 {
+    ከሆነ እኔ == 3 ወይም እኔ == 6 ወይም እኔ == 9 ወይም እኔ == 12 ወይም እኔ == 15 ወይም እኔ == 18 {
+        ማተም "   Multiple of 3:" + እኔ
+        ቀጥል
+    }
+    ከሆነ እኔ == 5 ወይም እኔ == 10 ወይም እኔ == 15 {
+        ማተም "   Multiple of 5:" + እኔ
+        ቀጥል
+    }
+    ከሆነ እኔ > 15 {
+        ማተም "   Found number greater than 15:" + እኔ
+        የተገኘ_ቁጥር = እኔ
+        ተሰብር
+    }
+    ማተም "   Regular number:" + እኔ
+}
+
+ማተም "   Final found number:" + የተገኘ_ቁጥር
+
+ማተም ""
+ማተም "=== All Break/Continue Tests Completed! ==="
+ማተም "Break and Continue are working! 🎉"
