@@ -1,0 +1,16 @@
+# basic_import_test.geez - Basic test for import system
+# This file tests basic import functionality
+
+# Test basic import
+አመጣ math_module
+
+# Test from import
+ከ string_utils አመጣ ወደ_አላይ
+
+# Test using imported functions
+ማተም "=== Import System Test ==="
+ማተም "Import system is working!"
+
+# Test that modules are loaded
+ማተም "Math module loaded successfully"
+ማተም "String utils function loaded successfully"

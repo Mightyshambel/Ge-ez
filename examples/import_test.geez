@@ -1,0 +1,33 @@
+# import_test.geez - Test the import system
+# This file demonstrates how to use the import system
+
+# Test basic import
+አመጣ math_module
+
+# Test from import
+ከ string_utils አመጣ ወደ_አላይ
+ከ string_utils አመጣ የጽሑፍ_ርዝመት
+
+# Test using imported functions
+ማተም "=== Math Module Test ==="
+ማተም "5 + 3 =", math_module.ተጨማሪ(5, 3)
+ማተም "10 - 4 =", math_module.ቀነስ(10, 4)
+ማተም "6 * 7 =", math_module.ማባዛት(6, 7)
+ማተም "15 / 3 =", math_module.መከፋፈል(15, 3)
+ማተም "4^2 =", math_module.ካሬ(4)
+ማተም "√16 =", math_module.አራት_ስር(16)
+
+ማተም ""
+ማተም "=== Constants ==="
+ማተም "π =", math_module.ፒ
+ማተም "e =", math_module.ኢ
+
+ማተም ""
+ማተም "=== String Utils Test ==="
+አስተዋውቅ ስም = "አሊ"
+ማተም "Original:", ስም
+ማተም "Uppercase:", ወደ_አላይ(ስም)
+ማተም "Length:", የጽሑፍ_ርዝመት(ስም)
+
+ማተም ""
+ማተም "=== Import System Working! ==="

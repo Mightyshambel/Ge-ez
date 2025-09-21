@@ -38,6 +38,8 @@ from .parser import (
     AccessNode,
     CallMethodNode,
     PropertyAssignmentNode,
+    ImportNode,
+    FromImportNode,
 )
 from .errors import AmharicErrorMessages
 
@@ -49,6 +51,7 @@ class GeEzInterpreter:
         self.variables: Dict[str, Any] = {}
         self.functions: Dict[str, FunctionNode] = {}
         self.classes: Dict[str, ClassNode] = {}  # Store class definitions
+        self.modules: Dict[str, Dict[str, Any]] = {}  # Store imported modules
         self.in_try_catch = False  # Flag to track if we're in try-catch context
 
         # Performance optimizations
@@ -91,6 +94,8 @@ class GeEzInterpreter:
             AccessNode: self.execute_property_access,
             CallMethodNode: self.execute_method_call,
             PropertyAssignmentNode: self.execute_property_assignment,
+            ImportNode: self.execute_import,
+            FromImportNode: self.execute_from_import,
         }
 
     def clear_cache(self) -> None:
@@ -218,6 +223,12 @@ class GeEzInterpreter:
 
         elif isinstance(node, PropertyAssignmentNode):
             return self.execute_property_assignment(node)
+
+        elif isinstance(node, ImportNode):
+            return self.execute_import(node)
+
+        elif isinstance(node, FromImportNode):
+            return self.execute_from_import(node)
 
         elif isinstance(node, BinaryOpNode):
             return self.execute_binary_op(node)
@@ -914,6 +925,14 @@ class GeEzInterpreter:
             )
             raise TypeError(error_msg)
 
+        # Check if this is a module function call
+        if node.method_name in object_value:
+            function_node = object_value[node.method_name]
+            if isinstance(function_node, FunctionNode):
+                # This is a module function call
+                return self.execute_module_function_call(function_node, node.arguments)
+
+        # Check if this is a class method call
         class_name = object_value.get("__class__")
         if not class_name or class_name not in self.classes:
             error_msg = AmharicErrorMessages.get_interpreter_error(
@@ -960,6 +979,27 @@ class GeEzInterpreter:
             # Restore variables
             self.variables = old_variables
 
+    def execute_module_function_call(self, function_node: FunctionNode, arguments: List[ASTNode]) -> Any:
+        """Execute a function call from a module"""
+        # Create function context
+        old_variables = self.variables.copy()
+        
+        # Add function parameters
+        for i, param_name in enumerate(function_node.parameters):
+            if i < len(arguments):
+                param_value = self.execute(arguments[i])
+                self.variables[param_name] = param_value
+
+        try:
+            # Execute function body
+            result = None
+            for statement in function_node.body:
+                result = self.execute(statement)
+            return result
+        finally:
+            # Restore variables
+            self.variables = old_variables
+
     def execute_property_assignment(self, node: PropertyAssignmentNode) -> Any:
         """Execute property assignment: object.property = value"""
         object_value = self.execute(node.object_expr)
@@ -974,6 +1014,123 @@ class GeEzInterpreter:
         # Set the property
         object_value[node.property_name] = value
         return value
+
+    def execute_import(self, node: ImportNode) -> Any:
+        """Execute import statement: አመጣ module_name"""
+        module_name = node.module_name
+        
+        # Check if module is already imported
+        if module_name in self.modules:
+            return None
+            
+        # Try to load the module
+        try:
+            module_content = self.load_module(module_name)
+            self.modules[module_name] = module_content
+            
+            # Make module available in current scope
+            self.variables[module_name] = module_content
+            
+        except FileNotFoundError:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                "module_not_found", module=module_name
+            )
+            raise ImportError(error_msg)
+        except Exception as e:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                "import_error", module=module_name, error=str(e)
+            )
+            raise ImportError(error_msg)
+            
+        return None
+
+    def execute_from_import(self, node: FromImportNode) -> Any:
+        """Execute from import statement: ከ module_name አመጣ function_name"""
+        module_name = node.module_name
+        function_name = node.function_name
+        
+        # Check if module is already imported
+        if module_name not in self.modules:
+            try:
+                module_content = self.load_module(module_name)
+                self.modules[module_name] = module_content
+            except FileNotFoundError:
+                error_msg = AmharicErrorMessages.get_interpreter_error(
+                    "module_not_found", module=module_name
+                )
+                raise ImportError(error_msg)
+            except Exception as e:
+                error_msg = AmharicErrorMessages.get_interpreter_error(
+                    "import_error", module=module_name, error=str(e)
+                )
+                raise ImportError(error_msg)
+        
+        module_content = self.modules[module_name]
+        
+        # Check if function exists in module
+        if function_name not in module_content:
+            error_msg = AmharicErrorMessages.get_interpreter_error(
+                "function_not_found_in_module", 
+                function=function_name, 
+                module=module_name
+            )
+            raise ImportError(error_msg)
+        
+        # Import the function to current scope
+        imported_item = module_content[function_name]
+        self.variables[function_name] = imported_item
+        
+        # If it's a function, also add it to the functions dictionary
+        if isinstance(imported_item, FunctionNode):
+            self.functions[function_name] = imported_item
+            
+        return None
+
+    def load_module(self, module_name: str) -> Dict[str, Any]:
+        """Load a module from file system"""
+        import os
+        
+        # Look for .geez files
+        module_file = f"{module_name}.geez"
+        
+        if not os.path.exists(module_file):
+            raise FileNotFoundError(f"Module file '{module_file}' not found")
+        
+        # Read and parse the module
+        with open(module_file, 'r', encoding='utf-8') as f:
+            module_code = f.read()
+        
+        # Create a new interpreter for the module
+        from .lexer import GeEzLexer
+        from .parser import GeEzParser
+        
+        lexer = GeEzLexer()
+        tokens = lexer.tokenize(module_code)
+        
+        parser = GeEzParser(tokens)
+        ast = parser.parse()
+        
+        # Execute the module in a new interpreter context
+        module_interpreter = GeEzInterpreter()
+        for statement in ast:
+            module_interpreter.execute(statement)
+        
+        # Return the module's exported content
+        module_content = {}
+        
+        # Export functions
+        for func_name, func_node in module_interpreter.functions.items():
+            module_content[func_name] = func_node
+        
+        # Export variables (for constants, etc.)
+        for var_name, var_value in module_interpreter.variables.items():
+            module_content[var_name] = var_value
+        
+        # Export classes
+        for class_name, class_node in module_interpreter.classes.items():
+            module_content[class_name] = class_node
+        
+        return module_content
 
 
 class ReturnException(Exception):

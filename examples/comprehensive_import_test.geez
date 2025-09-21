@@ -1,0 +1,53 @@
+# comprehensive_import_test.geez - Comprehensive test of the import system
+# This demonstrates both basic import and from import functionality
+
+ማተም "=== Ge-ez Import System Test ==="
+ማተም ""
+
+# Test 1: Basic import
+ማተም "1. Testing basic import..."
+አመጣ math_module
+ማተም "   ✓ math_module imported successfully"
+
+# Test 2: From import
+ማተም "2. Testing from import..."
+ከ string_utils አመጣ ወደ_አላይ
+ከ string_utils አመጣ የጽሑፍ_ርዝመት
+ማተም "   ✓ Functions imported from string_utils"
+
+# Test 3: Using imported functions
+ማተም "3. Testing imported functions..."
+አስተዋውቅ ስም = "አሊ"
+አስተዋውቅ ርዝመት_ውጤት = የጽሑፍ_ርዝመት(ስም)
+አስተዋውቅ አላይ_ውጤት = ወደ_አላይ(ስም)
+
+ማተም "   Original name:"
+ማተም ስም
+ማተም "   Length:"
+ማተም ርዝመት_ውጤት
+ማተም "   Uppercase:"
+ማተም አላይ_ውጤት
+
+# Test 4: Using module constants
+ማተም "4. Testing module constants..."
+ማተም "   π constant:"
+ማተም math_module.ፒ
+ማተም "   e constant:"
+ማተም math_module.ኢ
+
+# Test 5: Testing module functions
+ማተም "5. Testing module functions..."
+አስተዋውቅ የመደመር_ውጤት = math_module.ተጨማሪ(10, 5)
+አስተዋውቅ የመቀነስ_ውጤት = math_module.ቀነስ(10, 3)
+አስተዋውቅ የመባዛት_ውጤት = math_module.ማባዛት(4, 6)
+
+ማተም "   10 + 5 ="
+ማተም የመደመር_ውጤት
+ማተም "   10 - 3 ="
+ማተም የመቀነስ_ውጤት
+ማተም "   4 * 6 ="
+ማተም የመባዛት_ውጤት
+
+ማተም ""
+ማተም "=== All Tests Passed! ==="
+ማተም "Import system is fully functional! 🎉"

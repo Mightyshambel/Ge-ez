@@ -72,6 +72,8 @@ class GeEzLexer:
         "ተወላጅ": "INHERITS",  # class inheritance
         "ዘዴ": "METHOD",  # method definition
         "ባህሪ": "PROPERTY",  # property definition
+        "አመጣ": "IMPORT",  # import module
+        "ከ": "FROM",  # from (for imports)
     }
 
     # Token patterns

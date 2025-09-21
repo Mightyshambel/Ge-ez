@@ -1,0 +1,7 @@
+# simple_module_test.geez - Simple test for module function calls
+አመጣ math_module
+ማተም "Module loaded successfully"
+ማተም "Testing function call..."
+አስተዋውቅ ውጤት = math_module.ተጨማሪ(5, 3)
+ማተም "Result:"
+ማተም ውጤት

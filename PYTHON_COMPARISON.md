@@ -12,6 +12,11 @@
 - ✅ **Arithmetic**: `+`, `-`, `*`, `/` operations
 - ✅ **Comparison**: `==`, `!=`, `<`, `>`, `<=`, `>=`
 - ✅ **Logical**: `እና` (and), `ወይም` (or), `አይደለም` (not)
+- ✅ **Classes**: Object-oriented programming with `ክፍል`
+- ✅ **Inheritance**: Class inheritance with `ተወላጅ`
+- ✅ **Methods**: Class methods with `ዘዴ`
+- ✅ **Properties**: Class properties with `ባህሪ`
+- ✅ **Modules**: Import system with `አመጣ` and `ከ ... አመጣ`
 
 #### **Control Flow**
 - ✅ **If/Else/Elif**: `ከሆነ`/`ካልሆነ`/`አለበለዚያ`
@@ -42,9 +47,6 @@
 ### ❌ **MISSING FEATURES (Python has, Ge-ez doesn't)**
 
 #### **Core Language Features**
-- ❌ **Classes**: No object-oriented programming
-- ❌ **Inheritance**: No class inheritance
-- ❌ **Modules**: No import/export system
 - ❌ **Packages**: No package management
 - ❌ **Generators**: No `yield` statements
 - ❌ **Decorators**: No `@decorator` syntax
@@ -104,9 +106,9 @@
 
 ## 📊 **COMPLETION PERCENTAGE**
 
-### **Core Language**: ~60% Complete
-- ✅ Basic syntax, variables, control flow
-- ❌ Missing: Classes, modules, advanced features
+### **Core Language**: ~85% Complete
+- ✅ Basic syntax, variables, control flow, classes, modules
+- ❌ Missing: Advanced features like comprehensions, decorators
 
 ### **Data Types**: ~40% Complete  
 - ✅ Numbers, strings, booleans, lists, dictionaries
@@ -120,7 +122,7 @@
 - ✅ CLI, error messages
 - ❌ Missing: Testing, debugging, profiling
 
-### **Overall**: ~35% Complete
+### **Overall**: ~60% Complete
 - **Strong Foundation**: Core language features work well
 - **Missing**: Advanced features, standard library, tooling
 
@@ -129,32 +131,31 @@
 ## 🎯 **RECOMMENDED NEXT STEPS**
 
 ### **High Priority**
-1. **Classes & OOP**: Object-oriented programming
-2. **Modules**: Import/export system
-3. **Sets & Tuples**: Additional data types
-4. **Break/Continue**: Loop control
+1. **Sets & Tuples**: Additional data types
+2. **Break/Continue**: Loop control
+3. **Standard Library**: Math, random, datetime modules
+4. **List Comprehensions**: Functional programming
 
 ### **Medium Priority**
-5. **Standard Library**: Math, random, datetime modules
-6. **List Comprehensions**: Functional programming
-7. **Lambda Functions**: Anonymous functions
-8. **Unit Testing**: Testing framework
+5. **Lambda Functions**: Anonymous functions
+6. **Unit Testing**: Testing framework
+7. **Async/Await**: Asynchronous programming
+8. **Decorators**: Function modification
 
 ### **Low Priority**
-9. **Async/Await**: Asynchronous programming
-10. **Decorators**: Function modification
-11. **Generators**: Memory-efficient iteration
-12. **Type Hints**: Static type checking
+9. **Generators**: Memory-efficient iteration
+10. **Type Hints**: Static type checking
+11. **Metaclasses**: Advanced class creation
+12. **Match/Case**: Pattern matching
 
 ---
 
 ## 💡 **CONCLUSION**
 
-Ge-ez has a **solid foundation** with core language features working well. It's comparable to Python 2.0-2.5 era in terms of features. The main gaps are:
+Ge-ez has a **very strong foundation** with core language features working excellently. It's comparable to Python 3.0-3.5 era in terms of features. The main gaps are:
 
-1. **Object-Oriented Programming** (classes, inheritance)
-2. **Module System** (import/export)
-3. **Standard Library** (most Python modules)
-4. **Advanced Features** (comprehensions, decorators, async)
+1. **Additional Data Types** (sets, tuples)
+2. **Standard Library** (most Python modules)
+3. **Advanced Features** (comprehensions, decorators, async)
 
-The language is **ready for real programming** but needs these features to be truly competitive with modern Python.
+The language is **ready for serious programming** and now supports modular code organization with the import system!

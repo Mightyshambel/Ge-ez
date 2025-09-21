@@ -343,6 +343,25 @@ class PropertyAssignmentNode(ASTNode):
         return f"PropertyAssignment({self.object_expr}.{self.property_name} = {self.value_expr})"
 
 
+class ImportNode(ASTNode):
+    """Import statement: አመጣ module_name"""
+    def __init__(self, module_name: str):
+        self.module_name = module_name
+
+    def __repr__(self):
+        return f"Import({self.module_name})"
+
+
+class FromImportNode(ASTNode):
+    """From import statement: ከ module_name አመጣ function_name"""
+    def __init__(self, module_name: str, function_name: str):
+        self.module_name = module_name
+        self.function_name = function_name
+
+    def __repr__(self):
+        return f"FromImport(from {self.module_name} import {self.function_name})"
+
+
 class GeEzParser:
     """Parser for Ge-ez Amharic programming language"""
 
@@ -383,6 +402,10 @@ class GeEzParser:
             return self.parse_throw_statement()
         elif self.match("CLASS"):
             return self.parse_class_declaration()
+        elif self.match("IMPORT"):
+            return self.parse_import_statement()
+        elif self.match("FROM"):
+            return self.parse_from_import_statement()
         elif (
             self.check("IDENTIFIER")
             or self.check("AMHARIC_ID")
@@ -1164,3 +1187,25 @@ class GeEzParser:
                     return expr
         else:
             return self.parse_expression()
+
+    def parse_import_statement(self) -> ASTNode:
+        """Parse import statement: አመጣ module_name"""
+        module_name = self.consume(
+            "IDENTIFIER", "AMHARIC_ID", message="Expected module name"
+        ).value
+        return ImportNode(module_name)
+
+    def parse_from_import_statement(self) -> ASTNode:
+        """Parse from import statement: ከ module_name አመጣ function_name"""
+        module_name = self.consume(
+            "IDENTIFIER", "AMHARIC_ID", message="Expected module name"
+        ).value
+        
+        if not self.match("IMPORT"):
+            raise SyntaxError("Expected 'አመጣ' after module name")
+            
+        function_name = self.consume(
+            "IDENTIFIER", "AMHARIC_ID", message="Expected function name"
+        ).value
+        
+        return FromImportNode(module_name, function_name)
